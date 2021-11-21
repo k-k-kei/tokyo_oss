@@ -11,3 +11,10 @@
 
 - それでもコンテナに入りたい時
 `docker-compose exec front bash`
+
+## 追加で入れたパッケージ
+- tailwind
+- @nuxtjs/composition-api
+- @nuxt/typescript-runtime
+- nuxt-property-decoratorは入れてません。入れたい人が入れましょう。
+- 
