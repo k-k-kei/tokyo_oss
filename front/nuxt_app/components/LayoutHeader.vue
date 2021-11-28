@@ -1,9 +1,9 @@
 <template>
-    <header id="header" class="pt-5">
+    <header id="header" class="py-8">
         <p
           class="text-center text-sm font-bold leading-relaxed"
         >
-          Gs' FRIENDS
+          外に出たくなるブログ（ソトブロ）
         </p>
     </header>
 </template>

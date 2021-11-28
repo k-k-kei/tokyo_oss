@@ -1,5 +1,5 @@
 <template>
-  <div class="md:hidden bg-cWhite static uppercase font-semibold flex items-center md:flex-col md:ml-1 shadow-lg justify-around fixed w-screen bottom-0">
+  <div class="md:hidden bg-cBase border-t-2 static uppercase font-semibold flex items-center md:flex-col md:ml-1 shadow-lg justify-around fixed w-screen bottom-0">
     <NuxtLink to="/">
         <div class="flex flex-col pt-1 pb-2">
             <div class="md:px-5 px-3 pt-1">
