@@ -1,0 +1,26 @@
+<template>
+    <div id="wrapper" class="wrapper bg-cBase">
+        <slot />
+    </div>
+</template>
+
+<script lang="ts">
+import { defineComponent } from '@vue/composition-api'
+
+export default defineComponent({
+    setup() {
+
+    },
+})
+</script>
+
+<style scoped>
+
+.wrapper{
+    @media(min-width: 768px){
+        padding-top: 0;
+        margin:0;
+    }
+}
+
+</style>
