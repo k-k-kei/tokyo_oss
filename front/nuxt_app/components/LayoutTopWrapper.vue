@@ -1,5 +1,5 @@
 <template>
-    <div id="wrapper" class="wrapper bg-cBase">
+    <div id="wrapper" class="wrapper bg-cBase min-h-screen">
         <slot />
     </div>
 </template>
