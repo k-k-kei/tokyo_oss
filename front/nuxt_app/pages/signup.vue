@@ -33,11 +33,11 @@
         const email = ref('')
         const pass = ref('')
 
-        const changeEmail = (value) => {
+        const changeEmail = (value: any) => {
           email.value = value
         }
 
-        const changePassword = (value) => {
+        const changePassword = (value: any) => {
           pass.value = value
         }
 
