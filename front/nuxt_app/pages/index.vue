@@ -7,6 +7,7 @@
 </template>
 
 <script lang="ts">
+
 import { defineComponent, reactive } from '@nuxtjs/composition-api'
 
 export default defineComponent({
