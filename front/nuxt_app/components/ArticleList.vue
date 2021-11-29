@@ -1,19 +1,34 @@
 <template>
   <!-- t-settings__mainInner -->
-  <div data-has-main-background="true" class="p-6 m-0 border-concreteGray border-b rounded bg-white">
+  <div data-has-main-background="true" class="max-w-2xl p-10 m-0 border-concreteGray border-b rounded bg-white">
     <div class="o-noteList__main">
       <div class="o-noteListNotes__main">
-        <header class="o-noteListNotes__nav">
-          <nav class="o-noteListHeader">
-            <div class="o-noteListHeader__inner">
-              <div class="o-noteListHeader__num">
+        <!-- o-noteListNotes__nav -->
+        <header class="px-4 pb-2 border-b border-solid border-concreteGray">
+          <!-- o-noteListHeader -->
+          <nav class="flex items-start">
+            <!-- o-noteListHeader__inner -->
+            <div class="flex items-baseline justify-between min-w-full">
+              <!-- o-noteListHeader__num -->
+              <div class="text-sm whitespace-nowrap">
                 15 記事
               </div>
               <div class="o-noteListHeader__sort">
-                <ul class="o-noteListHeader__list">
-                  <li class="o-noteListHeader__item">
-                    <button class="o-noteListHeader__label">
+                <!-- o-noteListHeader__list -->
+                <ul class="flex items-center">
+                  <!-- o-noteListHeader__item -->
+                  <li class="ml-8 text-sm whitespace-nowrap">
+                    <!-- o-noteListHeader__label -->
+                    <button class="flex items-center">
                       公開ステータス
+                      <i aria-hidden="true" class="a-icon a-icon--arrowdropdown a-icon--size_medium" />
+                    </button>
+                  </li>
+                  <!-- o-noteListHeader__item -->
+                  <li class="ml-8 text-sm whitespace-nowrap">
+                    <!-- o-noteListHeader__label -->
+                    <button class="flex items-center">
+                      期間
                       <i aria-hidden="true" class="a-icon a-icon--arrowdropdown a-icon--size_medium" />
                     </button>
                   </li>
@@ -22,10 +37,11 @@
             </div>
           </nav>
         </header>
-        <!-- o-articleList__item -->
-        <div v-for="article in articles" :key="article.id" class="relative flex p-4 border-b border-solid border-concreteGray">
-          <ul>
-            <li>
+        <!-- o-noteListNotes__body -->
+        <ul>
+          <li v-for="article in articles" :key="article.id">
+            <!-- o-articleList__item -->
+            <div class="relative flex p-4 border-b border-solid border-concreteGray">
               <div class="o-articleList__item">
                 <NuxtLink :to="'/' + article.id + '/'">
                   <div class="o-articleList__checkbox">
@@ -73,43 +89,9 @@
                   </div>
                 </NuxtLink>
               </div>
-            </li>
-          </ul>
-          <!-- <div class="w-full">
-          <img class="max-w-full rounded-md" :src="article.img" :alt="article.title">
-        </div>
-        <div class="mt-2">
-          <h2 class="text-lg text-cMain tracking-wider font-bold line-clamp-2">
-            {{ article.title }}
-          </h2>
-        </div>
-        <div class="mt-2">
-          <h3 class="text-base text-cGray tracking-wider line-clamp-2 md:line-clamp-2">
-            {{ article.text }}
-          </h3>
-        </div>
-        <div class="mt-2 flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-cPink" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-          </svg>
-          <span class="text-sm text-cPink ml-1 tracking-wider line-clamp-2 md:line-clamp-4">{{ article.like }}</span>
-        </div>
-        <div class="mt-2">
-          <div class="flex items-center">
-            <div>
-              <img class="max-w-full w-8 rounded-full" :src="article.editorImage" :alt="article.editor">
             </div>
-            <div class="flex flex-col ">
-              <div class="text-xs text-cGray pl-2">
-                <p>{{ article.editor }}</p>
-              </div>
-              <div class="text-xs text-cGray pl-2">
-                <p>{{ article.created }}</p>
-              </div>
-            </div>
-          </div>
-        </div> -->
-        </div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
