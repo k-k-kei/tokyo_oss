@@ -1,14 +1,15 @@
-import firebase from 'firebase'
+import firebase from 'firebase';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyDtXT47mW0Faq8lOKOFum1ZkgsGxKCnQGo',
-  authDomain: 'tokyo-oss-ad760.firebaseapp.com',
-  projectId: 'tokyo-oss-ad760',
-  storageBucket: 'tokyo-oss-ad760.appspot.com'
+  apiKey: process.env.FIREBASE_PROJECT_API,
+  authDomain: process.env.FIREBASE_AUTH_DOMEIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STRAGE_BUCKET
+};
+
+if(!firebase.apps.length){
+    firebase.initializeApp(firebaseConfig)
 }
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig)
-}
-const db = firebase.firestore()
+const db = firebase.firestore();
 export default db
