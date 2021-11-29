@@ -1,6 +1,6 @@
 <template>
-    <div class="min-h-screen w-5/12 mx-auto my-9">
-        <ArticleContent />
+    <div class="min-h-screen md:w-5/12 md:mx-auto mx-4 my-9">
+        <slot />
     </div>
 </template>
 

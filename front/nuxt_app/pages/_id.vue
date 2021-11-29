@@ -1,6 +1,8 @@
 <template>
     <div>
-        <ArticleWrapper />
+        <article-wrapper>
+            <ArticleContent />
+        </article-wrapper>
     </div>
 </template>
 
