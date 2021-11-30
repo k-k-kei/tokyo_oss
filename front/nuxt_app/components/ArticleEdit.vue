@@ -13,12 +13,15 @@
 <script lang="ts">
 import { defineComponent, reactive, onMounted, ref } from '@nuxtjs/composition-api'
 
-import EditorJS from "@editorjs/editorjs";
-import Header from "@editorjs/header";
-import Table from '@editorjs/table';  // tableはnested arrayなのでfirestoreがエラー起こす！
-import List from "@editorjs/list";
-import ImageTool from "@editorjs/image";
 import db from "../plugins/firebase";
+
+import EditorJS from "@editorjs/editorjs";
+
+// importするとtypescriptの型エラーが出るからやむなくrequire
+const Header    = require("@editorjs/header");
+const Table     = require('@editorjs/table');  // tableはnested arrayなのでfirestoreがエラー起こす！
+const List      = require("@editorjs/list");
+const ImageTool = require("@editorjs/image");
 //   import axios from "axios";
 //   import qs from "qs";
 
@@ -79,10 +82,10 @@ export default defineComponent({
 
         // firestoreでnested arrayがサポート外なので
         // data.contentを多重配列 => オブジェクト配列に変換
-        outputData.blocks.forEach(block => {
+        outputData.blocks.forEach((block:any) => {
           if(block.data.content){
-            block.data.content = block.data.content.map(el => {
-              return el.reduce((a,b,i) => {
+            block.data.content = block.data.content.map((el:any) => {
+              return el.reduce((a:any, b:any, i:number) => {
                 a[i] = b
                 return a
               },{})
