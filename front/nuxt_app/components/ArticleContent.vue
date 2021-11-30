@@ -13,7 +13,7 @@
     <div class="my-12">
       <div>
         <h1 class="my-4 text-4xl font-bold">
-          DIYで「自分で作ってみようかな？」の原体験
+          {{ title }}
         </h1>
       </div>
       <!-- いいねマークと数 -->
@@ -88,14 +88,19 @@ import {
   ref,
   defineComponent,
   onMounted,
-  reactive,
 } from "@nuxtjs/composition-api";
 import { db } from "~/plugins/firebase";
+import getParamsId from "../composable/getParams";
 
 export default defineComponent({
   setup() {
-    // ブログテキスト表示用の配列
+    // ブログテキスト
     const data = ref<Array<String>>([]);
+    //ブログタイトル
+    const title = ref("");
+    //記事のドキュメントid
+    const id = getParamsId();
+
 
     // firebaseのオブジェクトをリアルタイムに取得
     onMounted(() => {
@@ -103,9 +108,13 @@ export default defineComponent({
         .get()
         .then((querySnapshot: any) => {
           querySnapshot.forEach((doc: any) => {
-              //取得したオブジェクトの中にある配列を変数に格納
-            const dataArray = doc.data().blocks;
+            //タイトルを取得
+            title.value = doc.data().title;
+
+            //テキストを取得
+            //取得したオブジェクトの中にある配列を変数に格納
             //配列を展開して一つずつ上記で定義したdataに移す
+            const dataArray = doc.data().blocks;
             dataArray.forEach((el) => data.value.push(el));
           });
         });
@@ -122,6 +131,7 @@ export default defineComponent({
 
     return {
       data,
+      title,
       textStyle,
     };
   },
