@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BaseInputImage />
+    <!-- <BaseInputImage @saveImageFile="getImageFile" /> -->
     <!-- ヘッダー下にマージンをとる -->
     <div class="h-72">
       <img
@@ -97,6 +97,14 @@ export default defineComponent({
     // ブログテキスト表示用の配列
     const data = ref<Array<String>>([]);
 
+    //子コンポーネントでアップロードした画像をimageFileに格納する
+    // const imageFile = ref("");
+
+    // const getImageFile = (file) => {
+    //   imageFile.value = file.value;
+    //   console.log(imageFile.value);
+    // }
+
     // firebaseのオブジェクトをリアルタイムに取得
     onMounted(() => {
       db.collection("memo")
@@ -123,6 +131,7 @@ export default defineComponent({
     return {
       data,
       textStyle,
+      // getImageFile
     };
   },
 });
