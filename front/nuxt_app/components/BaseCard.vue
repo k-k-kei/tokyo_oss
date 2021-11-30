@@ -3,10 +3,10 @@
       <div v-for="(memo, i) in cards" :key="i" class="w-full flex flex-col mx-auto pt-4 pb-2 border-b-2 md:border-b-0 px-4">
         <NuxtLink :to="'/' + i + '/'">
             <div v-if="memo.mainImage" class="w-full">
-                <img class="max-w-full object-cover h-45 rounded-md mx-auto" :src="memo.mainImage" :alt="memo.title">
+                <img class="max-w-full object-cover h-44 rounded-md mx-auto" :src="memo.mainImage" :alt="memo.title">
             </div>
             <div v-else class="w-full">
-                <img class="max-w-full object-cover h-45 rounded-md mx-auto" src="/images/sotoburo.png" :alt="memo.title">
+                <img class="max-w-full object-cover h-44 rounded-md mx-auto" src="/images/sotoburo.png" :alt="memo.title">
             </div>
             <div class="mt-2">
                 <h2 class="text-lg text-cMain tracking-wider font-bold line-clamp-2">{{ memo.title }}</h2>
@@ -42,7 +42,6 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@nuxtjs/composition-api'
-import { reverse } from 'dns'
 
 export default defineComponent({
   props: {
