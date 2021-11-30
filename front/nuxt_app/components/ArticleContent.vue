@@ -1,5 +1,6 @@
 <template>
   <div>
+    <BaseInputImage />
     <!-- ヘッダー下にマージンをとる -->
     <div class="h-72">
       <img
@@ -41,7 +42,7 @@
       <!-- 本文 -->
       <div v-for="text in data" :key="text.id">
         <p :class="textStyle(text.type)">
-          {{ text.text }}
+          {{ text.data.text }}
         </p>
       </div>
       <!-- 関連タグ -->
@@ -98,7 +99,7 @@ export default defineComponent({
 
     // firebaseのオブジェクトをリアルタイムに取得
     onMounted(() => {
-      db.collection("blogs")
+      db.collection("memo")
         .get()
         .then((querySnapshot: any) => {
           querySnapshot.forEach((doc: any) => {
