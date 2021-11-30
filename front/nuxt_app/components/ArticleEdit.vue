@@ -1,11 +1,11 @@
 <template>
   <div>
-    <input type="text" class="border-2 border-cGray rounded mx-auto" placeholder="title">
+    <input type="text" class="border-2 border-cGray rounded mx-auto" placeholder="title" v-model="mainTitle">
     <div>
       <div id="editorjs"></div>
     </div>
     <div>
-      <button @click="save">SAVE</button>
+      <base-button :title="buttonTitle" :link="buttonLink" @buttonEvent="save" />
     </div>
   </div>
 </template>
@@ -13,11 +13,15 @@
 <script lang="ts">
 import { defineComponent, reactive, onMounted, ref } from '@nuxtjs/composition-api'
 
-import db from "../plugins/firebase";
+import firebase from "../plugins/firebase";
+import { db, storageRef, auth } from "../plugins/firebase";
+
+// import firebase from '../plugins/firebase';
+// import "firebase/auth"
 
 import EditorJS from "@editorjs/editorjs";
 
-// importするとtypescriptの型エラーが出るからやむなくrequire
+// importするとtypescriptの型エラーが出るからやむなくrequire 普通はimportするべき
 const Header    = require("@editorjs/header");
 const Table     = require('@editorjs/table');  // tableはnested arrayなのでfirestoreがエラー起こす！
 const List      = require("@editorjs/list");
@@ -34,8 +38,16 @@ export default defineComponent({
       interval_handler: undefined,
       post_id: undefined,
     })
+    
+    const mainTitle = ref("")
+    // const ptRef = storageRef.child("66f1fa1daabd518d54e3b148b309dc10--mario-nintendo-super-nintendo.jpg")
+    // const ptImageRef = storageRef.child("images/66f1fa1daabd518d54e3b148b309dc10--mario-nintendo-super-nintendo.jpg")
+    const buttonLink = "/edit"
+    const buttonTitle = "SAVE"
 
     const init = ():void => {
+      const user = auth.currentUser
+      console.log(user)
       // Editor.jsの初期化
       data.editor = new EditorJS({
         //Editor.jsの対象にするidを与える
@@ -64,39 +76,64 @@ export default defineComponent({
           image: {
             class: ImageTool,
             config: {
-              endpoints: {
-                byFile: 'http://localhost:8008/uploadFile', // Your backend file uploader endpoint
-                byUrl: 'http://localhost:8008/fetchUrl', // Your endpoint that provides uploading by Url
-              }
+              uploader:{
+                async uploadByFile(file:File){
+                  const metadata = {
+                    contentType: "image/jpeg"
+                  }
+
+                  const uploadTask = await storageRef.child(file.name).put(file, metadata)
+                  console.log("Uploaded !", uploadTask)
+                  
+                  const downloadURL = await uploadTask.ref.getDownloadURL()
+                  console.log(downloadURL)
+
+                  return {
+                    success: 1,
+                    file: {
+                      url: downloadURL,
+                    },
+                  }
+                },
+              },  
             },
-          },
+          }
 
         }, 
       });
     }
 
-  const save = ():void => {
-    data.editor
-      .save()
-      .then((outputData:any) => {
+    const save = ():void => {
+        // console.log(ptRef.name)
+        // console.log(ptImageRef.fullPath)
+        // console.log(mainTitle.value)
+      data.editor
+        .save()
+        .then((outputData:any) => {
+          outputData["public"] = true
+          outputData["title"]  = mainTitle.value
+          outputData["mainImage"] = "https://firebasestorage.googleapis.com/v0/b/tokyo-oss-ad760.appspot.com/o/66f1fa1daabd518d54e3b148b309dc10--mario-nintendo-super-nintendo.jpg?alt=media&token=4aa4cf8a-4167-4a76-a8bd-b93144e229cb"
 
-        // firestoreでnested arrayがサポート外なので
-        // data.contentを多重配列 => オブジェクト配列に変換
-        outputData.blocks.forEach((block:any) => {
-          if(block.data.content){
-            block.data.content = block.data.content.map((el:any) => {
-              return el.reduce((a:any, b:any, i:number) => {
-                a[i] = b
-                return a
-              },{})
-            }) 
-          }
+          // firestoreでnested arrayがサポート外なので
+          // data.contentを多重配列 => オブジェクト配列に変換
+          outputData.blocks.forEach((block:any) => {
+            if(block.data.content){
+              block.data.content = block.data.content.map((el:any) => {
+                return el.reduce((a:any, b:any, i:number) => {
+                  a[i] = b
+                  return a
+                },{})
+              }) 
+            }
+          })
+
+          console.log("saved on firestore!! :", outputData)
+          db.collection('memo').add(outputData)
         })
-
-        console.log("saved on firestore!! :", outputData)
-        db.collection('memo').add(outputData)
-      })
-  }
+        .then((error: any) => {
+          console.log(error)
+        })
+    }
 
     onMounted(() => {
       init()
@@ -104,6 +141,9 @@ export default defineComponent({
 
     return {
       data,
+      mainTitle,
+      buttonLink,
+      buttonTitle,
       save
     }
   },

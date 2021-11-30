@@ -90,7 +90,7 @@ import {
   onMounted,
   reactive,
 } from "@nuxtjs/composition-api";
-import db from "~/plugins/firebase";
+import { db } from "~/plugins/firebase";
 
 export default defineComponent({
   setup() {
