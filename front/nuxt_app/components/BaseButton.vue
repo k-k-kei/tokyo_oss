@@ -1,8 +1,8 @@
 <template>
-    <NuxtLink :to="link">
+    <NuxtLink :to="buttonLink">
         <button @click="buttonEvent" class="bg-cAcc rounded">
             <div class="text-cBase px-4 py-2 text-xs md:text-sm">
-                <span>{{ title }}</span>
+                <span>{{ buttonTitle }}</span>
             </div>
         </button>
     </NuxtLink>
@@ -27,12 +27,15 @@ export default defineComponent({
     const { title } = toRefs(props)
     const { link } = toRefs(props)
 
+    const buttonTitle = title.value
+    const buttonLink = link.value
+
     const buttonEvent = () =>{
         emit('buttonEvent')
     }
 
     return {
-      title, link, buttonEvent
+      buttonTitle, buttonLink, buttonEvent
     }
   },
 })
