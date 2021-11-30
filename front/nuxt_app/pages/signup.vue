@@ -26,7 +26,7 @@
 
 <script lang="ts">
   import { defineComponent,computed,ref } from '@vue/composition-api'
-  import firebase from 'firebase'
+  import { auth } from '../plugins/firebase'
 
   export default defineComponent({
       setup(){
@@ -44,7 +44,7 @@
         //新規登録処理
         const signUpWithEmail = async (email:string,password:string) => {
           try{
-            firebase.auth().createUserWithEmailAndPassword(email,password)
+            auth.createUserWithEmailAndPassword(email,password)
               .then((user) => {
                 //登録完了した後の処理を書いていく
                 
