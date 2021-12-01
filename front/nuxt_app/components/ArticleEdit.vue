@@ -12,12 +12,8 @@
 
 <script lang="ts">
 import { defineComponent, reactive, onMounted, ref } from '@nuxtjs/composition-api'
-
-import firebase from "../plugins/firebase";
-import { db, storageRef, auth } from "../plugins/firebase";
-
-// import firebase from '../plugins/firebase';
-// import "firebase/auth"
+import firebase from 'firebase'
+import { db, storage, auth } from "../plugins/firebase";
 
 import EditorJS from "@editorjs/editorjs";
 
@@ -28,6 +24,43 @@ const List      = require("@editorjs/list");
 const ImageTool = require("@editorjs/image");
 //   import axios from "axios";
 //   import qs from "qs";
+
+// ボタンのコンポーネントに渡す変数
+const buttonLink = "/edit"
+const buttonTitle = "SAVE"
+
+// input len : Number
+// return String charsからなるlen桁の文字列
+const genId = (len:Number):String => {
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+  return [...Array(len)].reduce((a:any, b:any, i:any) => {
+    return a + chars.charAt(Math.floor(Math.random() * chars.length))
+  }, "")
+}
+
+//アップロードした画像をstorageとfirestoreに保存する関数
+const saveStorage = (file:File) => {
+  //乱数を生成して保存する画像名の重複を防ぐ
+  //storageに画像を保存
+  const storageRef = storage.ref(`images/${genId(8)}_${file.name}`);
+  console.log(storageRef);
+
+  //保存した画像のstorageパスを取得して任意のfirestoreドキュメントに保存
+  const uploadTask = storageRef.put(file);
+  uploadTask.on(
+    firebase.storage.TaskEvent.STATE_CHANGED,
+    null,
+    (error) => {
+      console.log(error);
+    },
+    () => {
+      storageRef.getDownloadURL().then((url) => {
+        console.log(url);
+        //※ここでstorage画像パス保存先ドキュメントを指定
+      });
+    }
+  );
+};
 
 export default defineComponent({
   setup() {
@@ -40,14 +73,15 @@ export default defineComponent({
     })
     
     const mainTitle = ref("")
-    // const ptRef = storageRef.child("66f1fa1daabd518d54e3b148b309dc10--mario-nintendo-super-nintendo.jpg")
-    // const ptImageRef = storageRef.child("images/66f1fa1daabd518d54e3b148b309dc10--mario-nintendo-super-nintendo.jpg")
-    const buttonLink = "/edit"
-    const buttonTitle = "SAVE"
+    let uid = ""
 
     const init = ():void => {
-      const user = auth.currentUser
-      console.log(user)
+      // auth.onAuthStateChanged((user) => {
+      //   if(user){
+      //     console.log(user.uid)
+      //     uid.value = user.uid
+      //   }
+      // })
       // Editor.jsの初期化
       data.editor = new EditorJS({
         //Editor.jsの対象にするidを与える
@@ -65,14 +99,15 @@ export default defineComponent({
             class: List,
             inlineToolbar: true,
           },
-          table: {
-            class: Table,
-            inlineToolbar: true,
-            config: {
-              rows: 3,
-              cols: 3,
-            },
-          },
+          // tableはiOS用のeditorjs が対応してないので不使用
+          // table: {
+          //   class: Table,
+          //   inlineToolbar: true,
+          //   config: {
+          //     rows: 3,
+          //     cols: 3,
+          //   },
+          // },
           image: {
             class: ImageTool,
             config: {
@@ -82,7 +117,7 @@ export default defineComponent({
                     contentType: "image/jpeg"
                   }
 
-                  const uploadTask = await storageRef.child(file.name).put(file, metadata)
+                  const uploadTask = await storage.ref().child(file.name).put(file, metadata)
                   console.log("Uploaded !", uploadTask)
                   
                   const downloadURL = await uploadTask.ref.getDownloadURL()
@@ -98,42 +133,53 @@ export default defineComponent({
               },  
             },
           }
-
         }, 
       });
     }
 
     const save = ():void => {
-        // console.log(ptRef.name)
-        // console.log(ptImageRef.fullPath)
-        // console.log(mainTitle.value)
+
+      // 普通にcurrentUserでユーザー情報とれた
+      const user = auth.currentUser
+      if(user) uid = user.uid
+
+      // editor部分をsaveするメソッド
       data.editor
         .save()
         .then((outputData:any) => {
-          outputData["public"] = true
-          outputData["title"]  = mainTitle.value
-          outputData["mainImage"] = "https://firebasestorage.googleapis.com/v0/b/tokyo-oss-ad760.appspot.com/o/66f1fa1daabd518d54e3b148b309dc10--mario-nintendo-super-nintendo.jpg?alt=media&token=4aa4cf8a-4167-4a76-a8bd-b93144e229cb"
+          const tmpObj = {
+            isPublic : true,
+            title    : mainTitle.value,
+            mainImage: "https://aaa",
+            docId    : "",
+            uid      : uid
+          }
 
-          // firestoreでnested arrayがサポート外なので
-          // data.contentを多重配列 => オブジェクト配列に変換
-          outputData.blocks.forEach((block:any) => {
-            if(block.data.content){
-              block.data.content = block.data.content.map((el:any) => {
-                return el.reduce((a:any, b:any, i:number) => {
-                  a[i] = b
-                  return a
-                },{})
-              }) 
-            }
-          })
+          // table使わないためコメントアウト
+          // // firestoreでnested arrayがサポート外なので
+          // // data.contentを多重配列 => オブジェクト配列に変換
+          // outputData.blocks.forEach((block:any) => {
+          //   if(block.data.content){
+          //     block.data.content = block.data.content.map((el:any) => {
+          //       return el.reduce((a:any, b:any, i:number) => {
+          //         a[i] = b
+          //         return a
+          //       },{})
+          //     }) 
+          //   }
+          // })
 
-          console.log("saved on firestore!! :", outputData)
-          db.collection('memo').add(outputData)
+          const articleData = Object.assign(outputData, tmpObj)
+
+          console.log("saved on firestore!! :", articleData)
+          db.collection('memo').add(articleData)
+            // .then((docRef) => db.collection('memo').doc(docRef.id).update({docId:docRef.id}))
         })
         .then((error: any) => {
           console.log(error)
         })
     }
+
 
     onMounted(() => {
       init()

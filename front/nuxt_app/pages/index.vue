@@ -15,13 +15,14 @@ export default defineComponent({
   setup() {
 
     const memos = ref<any[]>([])
+
     onMounted(() => {
       db.collection("memo")
         .get()
         .then((querySnapshot: any) => {
           querySnapshot.forEach((doc: any) => {
-            const dataArray = doc.data();
-            memos.value.push(dataArray)
+            const dataObj = Object.assign(doc.data(), {id:doc.id}); 
+            memos.value.push(dataObj)
           });
         });
     });

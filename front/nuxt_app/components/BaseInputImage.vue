@@ -1,4 +1,5 @@
 <template>
+  <!-- <BaseInputImage /> -->
   <div>
     {{imageFile}}
     <img :src="previewImage[0]" alt="" />
@@ -12,29 +13,29 @@ import firebase from "firebase";
 
 
 //アップロードした画像をstorageとfirestoreに保存する関数
-const saveStorage = (file) => {
-  //乱数を生成して保存する画像名の重複を防ぐ
-  const randomNum = Math.floor(Math.random() * (1000 - 100));
-  //storageに画像を保存
-  const storageRef = firebase.storage().ref(`images/${randomNum}_${file.name}`);
-  console.log(storageRef);
+// const saveStorage = (file:File) => {
+//   //乱数を生成して保存する画像名の重複を防ぐ
+//   const randomNum = Math.floor(Math.random() * (1000 - 100));
+//   //storageに画像を保存
+//   const storageRef = firebase.storage().ref(`images/${randomNum}_${file.name}`);
+//   console.log(storageRef);
 
-  //保存した画像のstorageパスを取得して任意のfirestoreドキュメントに保存
-  const uploadTask = storageRef.put(file);
-  uploadTask.on(
-    firebase.storage.TaskEvent.STATE_CHANGED,
-    null,
-    (error) => {
-      console.log(error);
-    },
-    () => {
-      storageRef.getDownloadURL().then((url) => {
-        console.log(url);
-        //※ここでstorage画像パス保存先ドキュメントを指定
-      });
-    }
-  );
-};
+//   //保存した画像のstorageパスを取得して任意のfirestoreドキュメントに保存
+//   const uploadTask = storageRef.put(file);
+//   uploadTask.on(
+//     firebase.storage.TaskEvent.STATE_CHANGED,
+//     null,
+//     (error) => {
+//       console.log(error);
+//     },
+//     () => {
+//       storageRef.getDownloadURL().then((url) => {
+//         console.log(url);
+//         //※ここでstorage画像パス保存先ドキュメントを指定
+//       });
+//     }
+//   );
+// };
 
 
 export default defineComponent({
@@ -45,14 +46,14 @@ export default defineComponent({
 
 
     //アップロードボタンを押したら発火する関数
-    const selectImage = (e) => {
+    const selectImage = (e:any) => {
       // inputからfileデータを取得
       const file = e.target.files[0];
       const reader = new FileReader();
       reader.readAsDataURL(file);
 
       // アップロードした画像をプレビューで表示するために配列にpush
-      reader.onload = (e) => {
+      reader.onload = (e:any) => {
         previewImage.value.push(e.target.result);
       };
 

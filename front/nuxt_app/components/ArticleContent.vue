@@ -106,13 +106,13 @@ export default defineComponent({
               //取得したオブジェクトの中にある配列を変数に格納
             const dataArray = doc.data().blocks;
             //配列を展開して一つずつ上記で定義したdataに移す
-            dataArray.forEach((el) => data.value.push(el));
+            dataArray.forEach((el:any) => data.value.push(el));
           });
         });
     });
 
     //editer.jsで保存されたtypeによってclassをだしわけ
-    const textStyle = (type) => {
+    const textStyle = (type:any) => {
       if (type === "header") {
         return "StyleHeader";
       } else {
