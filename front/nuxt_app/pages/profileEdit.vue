@@ -69,7 +69,10 @@
               category:category,
               admin:false,
             })
-            .then(() => console.log("success!:",name))
+            .then(() => {
+              console.log("success!:",name)
+              router.push('/')
+            })
 
           }
         }
