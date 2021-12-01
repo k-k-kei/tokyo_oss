@@ -66,9 +66,12 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      setTimeout(() =>
-        previewImage.value = [imageUrl.value]
-      , 1000)
+      setTimeout(() => {
+        previewImage.value = imageUrl?.value == "" ? [undefined] : [imageUrl?.value]
+        imageFile.value = previewImage.value
+      }, 1000)
+      console.log(previewImage)
+      console.log(imageFile)
     })
 
     return {

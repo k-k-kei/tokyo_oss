@@ -35,7 +35,7 @@ const buttonTitle2 = "DRAFT"
 // return String charsからなるlen桁の文字列
 const genId = (len:Number):String => {
   const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-  return [...Array(len)].reduce((a:any, b:any, i:any) => {
+  return [...Array(len)].reduce((a:any, b:any) => {
     return a + chars.charAt(Math.floor(Math.random() * chars.length))
   }, "")
 }
@@ -51,16 +51,15 @@ export default defineComponent({
       mainImageUrl: "",
     })
 
-    const id = ref("")
     const route = useRoute()
-    
+
+    const id = ref("")
     const mainTitle = ref("")
-    //子コンポーネントでアップロードした画像をimageFileに格納する
     const imageFile:any = ref("");
     let uid = ""
 
     const init = (article:any):void => {
-      mainTitle.value = article.title
+      mainTitle.value   = article.title
       data.mainImageUrl = article.mainImage
       // Editor.jsの初期化
       data.editor = new EditorJS({
@@ -109,8 +108,7 @@ export default defineComponent({
       const user = auth.currentUser
       if(user) uid = user.uid
       // editor部分をsaveするメソッド
-      data.editor
-        .save()
+      data.editor.save()
         .then(async (outputData:any) => {
           const tmpObj = {
             isPublic : bool,
@@ -119,12 +117,22 @@ export default defineComponent({
             docId    : "",
             uid      : uid
           }
-          await saveStorage(imageFile.value)
-          tmpObj.mainImage = data.mainImageUrl
+          if(imageFile.value !== ""){
+            console.log("------aaa-------", imageFile)
+            await saveStorage(imageFile.value)
+            tmpObj.mainImage = data.mainImageUrl
+          } 
+
           console.log(tmpObj)
           const articleData = Object.assign(outputData, tmpObj)
-          console.log("saved on firestore!! :", articleData)
-          db.collection('memo').add(articleData)
+
+          if(id.value){
+            db.collection('memo').doc(id.value).set(articleData)
+            console.log("update firestore!! :", articleData)
+          }else{
+            db.collection('memo').add(articleData)
+            console.log("saved on firestore!! :", articleData)
+          }
         })
         .then((error: any) => {
           console.log(error)
@@ -158,7 +166,13 @@ export default defineComponent({
     onMounted(async () => {
       id.value = route.value.params.id
       const myArticle = await getFireArticle(id.value)
-      myArticle ? init(myArticle) : init({})
+
+      if(myArticle){
+        data.mainImage = myArticle.mainImage
+        init(myArticle)
+      } else {
+        init({})
+      }
     })
 
     return {
