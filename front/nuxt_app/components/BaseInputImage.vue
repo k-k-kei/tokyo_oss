@@ -1,7 +1,7 @@
 <template>
   <!-- <BaseInputImage /> -->
   <div>
-    <img v-if="previewImage[0]" :src="previewImage[0]" :alt="imageFile" class="max-w-full w-full object-cover h-44" />
+    <img v-if="previewImage[0]" :src="previewImage[0]" :alt="imageFile" class="max-w-full w-full object-cover h-44 md:w-2/4 md:h-96 md:mx-auto" />
     <div v-if="imageFile == ''">
       <label
         class="
