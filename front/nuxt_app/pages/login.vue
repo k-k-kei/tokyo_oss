@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-col items-center justify-center min-h-screen">
-    <div class="sw-full sm:w-3/4 max-w-lg p-12 pb-6 shadow-2xl rounded border-gray-100 border">
+  <div class="flex flex-col items-center pt-24 min-h-screen">
+    <div v-if="userId == '' " class="sw-full sm:w-3/4 max-w-lg p-12 pb-6 shadow-2xl rounded border-gray-100 border">
     <div class="pb-6 text-3xl font-semibold">ログイン</div>
       <Input
         inputTitle="Email"
@@ -22,7 +22,9 @@
         ログイン
       </button>
     </div>
-    <LogoutButton />
+    <div v-else>
+      <LogoutButton />
+    </div>
   </div>
 </template>
 
@@ -34,6 +36,7 @@
       setup(){
         const email = ref('')
         const pass = ref('')
+        const userId = ref('')
         const router = useRouter()
 
         const changeEmail = (value: any) => {
@@ -43,6 +46,15 @@
         const changePassword = (value: any) => {
           pass.value = value
         }
+
+        auth.onAuthStateChanged((user:any) => {
+          if(user){
+            userId.value = user.uid
+            console.log(userId.value)
+          }else{
+            console.log('Not login')
+          }
+        })
 
         //新規登録処理
         const signUpWithEmail = async (email:string,password:string) => {
@@ -66,7 +78,8 @@
           pass,
           changeEmail,
           changePassword,
-          signUpWithEmail
+          signUpWithEmail,
+          userId
         }
       }
   })

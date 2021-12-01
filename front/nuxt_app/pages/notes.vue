@@ -3,7 +3,16 @@
     <div>
       <ArticleList :articles="memos" />
     </div>
-    <base-button  :title="buttonTitle" :link="buttonLink" @buttonEvent="logout" />
+    <div class="text-center pt-12">
+      <NuxtLink to="/login">
+        <button class="bg-cGray rounded">
+            <div class="text-cBase px-4 py-2 text-xs md:text-sm">
+                <span class="text-cBase font-semibold">{{ buttonTitle }}</span>
+            </div>
+        </button>
+    </NuxtLink>
+      <!-- <base-button  :title="buttonTitle" :link="buttonLink" @buttonEvent="logout" /> -->
+    </div>
   </article-list-wrapper>
 </template>
 
@@ -26,15 +35,10 @@ export default defineComponent({
           })
         })
     })
-    const buttonTitle = "logout"
-    const buttonLink  = "/"
-    const logout = () => {
-      auth.signOut()
-    }
+    const buttonTitle = "ログアウト"
+
     return {
       buttonTitle,
-      buttonLink,
-      logout,
       memos
     }
   }
