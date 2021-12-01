@@ -19,7 +19,7 @@ export default defineComponent({
         .get()
         .then((querySnapshot: any) => {
           querySnapshot.forEach((doc: any) => {
-            const dataArray = doc.data()
+            const dataArray = Object.assign(doc.data(), {id: doc.id});
             memos.value.push(dataArray)
           })
         })

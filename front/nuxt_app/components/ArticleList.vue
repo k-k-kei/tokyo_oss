@@ -1,5 +1,5 @@
 <template>
-  <div data-has-main-background="true" class="max-w-2xl p-10 m-0 border-concreteGray border-b rounded bg-white">
+  <div data-has-main-background="true" class="p-5 border-concreteGray border-b rounded bg-white">
     <header class="flex items-baseline justify-between min-w-full px-4 pb-2 border-b border-solid border-concreteGray">
       <div class="text-sm whitespace-nowrap">
         {{ articleNum }} 記事
@@ -38,22 +38,22 @@
               </div>
             </Nuxtlink>
             <!-- image分岐 -->
-            <div v-if="memo.mainImage" class="flex items-center ml-4">
+            <!-- <div v-if="memo.mainImage" class="flex items-center ml-4">
               <img class="block w-12 h-12 border-b border-solid border-concreteGray rounded-md" :src="memo.mainImage" :alt="memo.title">
             </div>
             <div v-else class="flex items-center ml-4">
               <img class="block w-12 h-12 border-b border-solid border-concreteGray rounded-md" :src="images/test" :alt="memo.title">
-            </div>
+            </div> -->
             <!-------------->
             <div class="flex items-center ml-2">
-              <NuxtLink :to="'/edit' + i + '/'">
+              <NuxtLink :to="'/edit/' + memo.id">
                 <button class="text-sm w-12 p-2 align-center rounded border-2 hover:border-gray-600">
                   編集
                 </button>
               </NuxtLink>
             </div>
             <div class="flex items-center m-2">
-              <button class="text-sm w-12 p-2 align-center rounded border-2 hover:border-gray-600" @click="deleteMemo(i)">
+              <button class="text-sm w-12 p-2 align-center rounded border-2 hover:border-gray-600" @click="deleteMemo(memo.id)">
                 削除
               </button>
             </div>
@@ -63,3 +63,36 @@
     </ul>
   </div>
 </template>
+
+<script lang="ts">
+import { defineComponent, useRouter } from "@nuxtjs/composition-api";
+import { db, storageRef, auth } from "../plugins/firebase";
+
+export default defineComponent({
+  //親コンポーネントから受け取った配列をpropsとして定義
+  props: {
+    articles: {
+      type: Array,
+      required: true
+    }
+  },
+
+
+  setup() {
+    const router = useRouter();
+
+    //記事のドキュメントidを引数にとってfirestoreから削除する関数
+    const deleteMemo = (id) => {
+      console.log(id)
+      db.collection("memo").doc(id).delete().then(() => {
+        alert("削除完了！");
+        router.push("/");
+      });
+    }
+
+    return{
+      deleteMemo
+    }
+  },
+})
+</script>
