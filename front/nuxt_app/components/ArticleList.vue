@@ -82,7 +82,7 @@ export default defineComponent({
     const router = useRouter();
 
     //記事のドキュメントidを引数にとってfirestoreから削除する関数
-    const deleteMemo = (id) => {
+    const deleteMemo = (id:string) => {
       console.log(id)
       db.collection("memo").doc(id).delete().then(() => {
         alert("削除完了！");

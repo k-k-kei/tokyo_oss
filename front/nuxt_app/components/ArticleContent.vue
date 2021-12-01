@@ -131,7 +131,7 @@ export default defineComponent({
               //取得したオブジェクトの中にある配列を変数に格納
               //配列を展開して一つずつ上記で定義したdataに移す
               const dataArray = doc.data().blocks;
-              dataArray.forEach((el) => data.value.push(el));
+              dataArray.forEach((el:any) => data.value.push(el));
             }
           });
         });
