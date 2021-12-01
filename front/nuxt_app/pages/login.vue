@@ -14,24 +14,27 @@
         @change = 'changePassword'
         typeName="password"
       />
+      <Nuxt-link to="/signup"> 新規登録はこちらから </Nuxt-link>
       <button
         @click="signUpWithEmail(email,pass)"
-        class="w-1/3 block mx-auto mt-6 bg-green-600 hover:bg-green-700 focus:bg-green-800  py-2 rounded text-white shadow-lg font-semibold"
+        class="w-1/3 block mx-auto mt-6 bg-cAcc  py-2 rounded text-white shadow-lg font-semibold"
       >
         ログイン
       </button>
     </div>
+    <LogoutButton />
   </div>
 </template>
 
 <script lang="ts">
-  import { defineComponent,computed,ref } from '@vue/composition-api'
+  import { defineComponent,computed,ref, useRouter} from '@nuxtjs/composition-api'
   import { auth } from '../plugins/firebase'
 
   export default defineComponent({
       setup(){
         const email = ref('')
         const pass = ref('')
+        const router = useRouter()
 
         const changeEmail = (value: any) => {
           email.value = value
@@ -48,6 +51,7 @@
               .then((user) => {
                 console.log("success login! :", user)
                 //ログインが完了した後の処理を書いていく
+                router.push('/')
               })
               .catch((error) => {
                 alert(error)
@@ -56,10 +60,6 @@
             alert(error)
           }
         }
-
-        // const routeEdit = () => {
-        //   this.$router.push('/')
-        // }
 
         return {
           email,
