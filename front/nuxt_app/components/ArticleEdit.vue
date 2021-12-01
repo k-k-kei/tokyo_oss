@@ -118,17 +118,15 @@ export default defineComponent({
             uid      : uid
           }
           if(imageFile.value !== ""){
-            console.log("------aaa-------", imageFile)
             await saveStorage(imageFile.value)
             tmpObj.mainImage = data.mainImageUrl
           } 
 
-          console.log(tmpObj)
           const articleData = Object.assign(outputData, tmpObj)
 
           if(id.value){
             db.collection('memo').doc(id.value).set(articleData)
-            console.log("update firestore!! :", articleData)
+            console.log("update your article!! :", articleData)
           }else{
             db.collection('memo').add(articleData)
             console.log("saved on firestore!! :", articleData)
@@ -148,14 +146,12 @@ export default defineComponent({
 
     const getImageFile = (file:File) => {
       imageFile.value = file;
-      console.log(imageFile.value);
     }
     //アップロードした画像をstorageとfirestoreに保存する関数
     const saveStorage = async (file:File) => {
       //乱数を生成して保存する画像名の重複を防ぐ
       //storageに画像を保存
       const storageRef = storage.ref().child(genId(8) + "_" + file.name);
-      console.log(storageRef);
 
       //保存した画像のstorageパスを取得して任意のfirestoreドキュメントに保存
       const uploadTask  = await storageRef.put(file)
