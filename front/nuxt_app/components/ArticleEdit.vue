@@ -1,10 +1,10 @@
 <template>
-  <div>
-    <input type="text" class="border-2 border-cGray rounded mx-auto" placeholder="title" v-model="mainTitle">
-    <div>
-      <div id="editorjs"></div>
+  <div class="min-h-screen flex flex-col">
+    <div class="text-center mx-8 my-8">
+      <input type="text" class="w-full text-center text-2xl font-bold focus:outline-none" placeholder="記事タイトル" v-model="mainTitle">
     </div>
-    <div>
+    <div id="editorjs" class="mx-8 mt-4 tracking-wider"></div>
+    <div class="text-center">
       <base-button :title="buttonTitle" :link="buttonLink" @buttonEvent="save" />
     </div>
   </div>
@@ -219,6 +219,10 @@ h5.ce-header {
 }
 h6.ce-header {
     font-weight: bold;
+}
+
+.cdx-input.image-tool__caption {
+    font-size: 0.75rem;
 }
 
 </style>

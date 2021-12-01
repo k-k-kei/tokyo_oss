@@ -42,6 +42,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@nuxtjs/composition-api'
+import changeDate from '../composable/changeDate'
 
 export default defineComponent({
   props: {
@@ -55,11 +56,6 @@ export default defineComponent({
     const likeNum = 42
     const editorImage = "https://www.himalmag.com/wp-content/uploads/2019/07/sample-profile-picture.png"
     const editorName = "BIRD"
-
-    const changeDate = (time:number) :string =>{
-      const dateTime = new Date(time)
-      return dateTime.toLocaleDateString('ja-JP')
-    }
 
     return {
       cardNum, likeNum, editorImage, editorName, changeDate
