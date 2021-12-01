@@ -41,9 +41,15 @@
       </div>
       <!-- 本文 -->
       <div v-for="text in data" :key="text.id">
-        <p :class="textStyle(text.type)">
-          {{ text.data.text }}
-        </p>
+        <div v-if="text.data.file != null" class="border rounded shadow">
+          <img :src="text.data.file.url" alt="挿入画像">
+          <p class="text-center text-sm text-cGray p-2">{{ text.data.caption }}</p>
+        </div>
+        <div v-else>
+          <p :class="textStyle(text.type)">
+            {{ text.data.text }}
+          </p>
+        </div>
       </div>
 
       <!-- 機能つけきれないので一旦コメントアウト -->
