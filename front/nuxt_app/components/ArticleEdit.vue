@@ -1,5 +1,6 @@
 <template>
   <div class="min-h-screen flex flex-col">
+    <BaseInputImage @saveImageFile="getImageFile" />
     <div class="text-center mx-8 my-8">
       <input type="text" class="w-full text-center text-2xl font-bold focus:outline-none" placeholder="記事タイトル" v-model="mainTitle">
     </div>
@@ -46,20 +47,20 @@ const saveStorage = (file:File) => {
   console.log(storageRef);
 
   //保存した画像のstorageパスを取得して任意のfirestoreドキュメントに保存
-  const uploadTask = storageRef.put(file);
-  uploadTask.on(
-    firebase.storage.TaskEvent.STATE_CHANGED,
-    null,
-    (error) => {
-      console.log(error);
-    },
-    () => {
-      storageRef.getDownloadURL().then((url) => {
-        console.log(url);
-        //※ここでstorage画像パス保存先ドキュメントを指定
-      });
-    }
-  );
+  // const uploadTask = storageRef.put(file);
+  // uploadTask.on(
+  //   firebase.storage.TaskEvent.STATE_CHANGED,
+  //   null,
+  //   (error) => {
+  //     console.log(error);
+  //   },
+  //   () => {
+  //     storageRef.getDownloadURL().then((url) => {
+  //       console.log(url);
+  //       //※ここでstorage画像パス保存先ドキュメントを指定
+  //     });
+  //   }
+  // );
 };
 
 export default defineComponent({
@@ -76,12 +77,6 @@ export default defineComponent({
     let uid = ""
 
     const init = ():void => {
-      // auth.onAuthStateChanged((user) => {
-      //   if(user){
-      //     console.log(user.uid)
-      //     uid.value = user.uid
-      //   }
-      // })
       // Editor.jsの初期化
       data.editor = new EditorJS({
         //Editor.jsの対象にするidを与える
@@ -181,6 +176,14 @@ export default defineComponent({
     }
 
 
+    //子コンポーネントでアップロードした画像をimageFileに格納する
+    const imageFile = ref("");
+
+    // const getImageFile = (file) => {
+    //   imageFile.value = file.value;
+    //   console.log(imageFile.value);
+    // }
+
     onMounted(() => {
       init()
     })
@@ -190,7 +193,8 @@ export default defineComponent({
       mainTitle,
       buttonLink,
       buttonTitle,
-      save
+      save,
+      // getImageFile,
     }
   },
 })
