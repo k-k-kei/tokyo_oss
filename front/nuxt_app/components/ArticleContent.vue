@@ -4,8 +4,8 @@
     <!-- ヘッダー下にマージンをとる -->
     <div class="h-72">
       <img
-        src="../assets/images/test.png"
-        alt=""
+        :src="mainImage"
+        alt="メインイメージ"
         class="h-full w-full object-cover"
       />
     </div>
@@ -36,8 +36,8 @@
       </div>
       <!-- ユーザー名と日時 -->
       <div class="mt-4">
-        <p class="text-sm">コーヒー侍</p>
-        <p class="text-sm text-gray-300">2021年11月22日</p>
+        <p class="text-sm">{{ userId }}</p>
+        <p class="text-sm text-gray-300">{{ datetime }}</p>
       </div>
       <!-- 本文 -->
       <div v-for="text in data" :key="text.id">
@@ -84,23 +84,24 @@
 </template>
 
 <script lang="ts">
-import {
-  ref,
-  defineComponent,
-  onMounted,
-} from "@nuxtjs/composition-api";
+import { ref, defineComponent, onMounted } from "@nuxtjs/composition-api";
 import { db } from "~/plugins/firebase";
 import getParamsId from "../composable/getParams";
 
 export default defineComponent({
   setup() {
-    // ブログテキスト
-    const data = ref<Array<String>>([]);
-    //ブログタイトル
-    const title = ref("");
     //記事のドキュメントid
     const id = getParamsId();
-
+    // ブログテキスト
+    const data = ref<Array<String>>([]);
+    //メインイメージ
+    const mainImage = ref("");
+    //ブログタイトル
+    const title = ref("");
+    //記事作成ユーザーid
+    const userId = ref("");
+    //記事作成日時
+    const datetime = ref("");
 
     //子コンポーネントでアップロードした画像をimageFileに格納する
     // const imageFile = ref("");
@@ -116,14 +117,21 @@ export default defineComponent({
         .get()
         .then((querySnapshot: any) => {
           querySnapshot.forEach((doc: any) => {
-            //タイトルを取得
-            title.value = doc.data().title;
-
-            //テキストを取得
-            //取得したオブジェクトの中にある配列を変数に格納
-            //配列を展開して一つずつ上記で定義したdataに移す
-            const dataArray = doc.data().blocks;
-            dataArray.forEach((el) => data.value.push(el));
+            if (doc.id === id) {
+              //メインイメージを取得
+              mainImage.value = doc.data().mainImage;
+              //タイトルを取得
+              title.value = doc.data().title;
+              //ユーザーidを取得
+              userId.value = doc.data().uid;
+              //記事作成日時を取得
+              datetime.value = doc.data().time;
+              //テキストを取得
+              //取得したオブジェクトの中にある配列を変数に格納
+              //配列を展開して一つずつ上記で定義したdataに移す
+              const dataArray = doc.data().blocks;
+              dataArray.forEach((el) => data.value.push(el));
+            }
           });
         });
     });
@@ -139,7 +147,10 @@ export default defineComponent({
 
     return {
       data,
+      mainImage,
       title,
+      userId,
+      datetime,
       textStyle,
       // getImageFile
     };
