@@ -37,7 +37,7 @@
       <!-- ユーザー名と日時 -->
       <div class="mt-4">
         <p class="text-sm">{{ userId }}</p>
-        <p class="text-sm text-gray-300">{{ datetime }}</p>
+        <p class="text-sm text-gray-300">{{ changeDate(datetime) }}</p>
       </div>
       <!-- 本文 -->
       <div v-for="text in data" :key="text.id">
@@ -45,6 +45,8 @@
           {{ text.data.text }}
         </p>
       </div>
+
+      <!-- 機能つけきれないので一旦コメントアウト -->
       <!-- 関連タグ -->
       <!-- <div class="flex flex-wrap text-sm">
                 <span class="mr-2 p-2 border rounded-md">#車椅子でも快適</span>
@@ -87,6 +89,7 @@
 import { ref, defineComponent, onMounted } from "@nuxtjs/composition-api";
 import { db } from "~/plugins/firebase";
 import getParamsId from "../composable/getParams";
+import changeDate from "../composable/changeDate";
 
 export default defineComponent({
   setup() {
@@ -102,14 +105,6 @@ export default defineComponent({
     const userId = ref("");
     //記事作成日時
     const datetime = ref("");
-
-    //子コンポーネントでアップロードした画像をimageFileに格納する
-    // const imageFile = ref("");
-
-    // const getImageFile = (file) => {
-    //   imageFile.value = file.value;
-    //   console.log(imageFile.value);
-    // }
 
     // firebaseのオブジェクトをリアルタイムに取得
     onMounted(() => {
@@ -152,6 +147,7 @@ export default defineComponent({
       userId,
       datetime,
       textStyle,
+      changeDate
       // getImageFile
     };
   },
