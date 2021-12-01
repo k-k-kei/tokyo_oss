@@ -9,12 +9,6 @@ export default defineComponent({
   middleware: 'authCheck',
   setup(){
     const route = useRoute()
-
-    onMounted(() => {
-      console.log(route)
-    })
   },
-
-
 })
 </script>
