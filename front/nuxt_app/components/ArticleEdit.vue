@@ -1,18 +1,19 @@
 <template>
   <div class="min-h-screen flex flex-col">
-    <BaseInputImage @saveImageFile="getImageFile" />
+    <BaseInputImage @saveImageFile="getImageFile" :imageUrl="data.mainImageUrl"/>
     <div class="text-center mx-8 my-8">
       <input type="text" class="w-full text-center text-2xl font-bold focus:outline-none" placeholder="記事タイトル" v-model="mainTitle">
     </div>
     <div id="editorjs" class="mx-8 mt-4 tracking-wider"></div>
     <div class="text-center">
-      <base-button :title="buttonTitle" :link="buttonLink" @buttonEvent="save" />
+      <base-button :title="buttonTitle1" :link="buttonLink1" @buttonEvent="save(true)" />
+      <base-button :title="buttonTitle2" :link="buttonLink2" @buttonEvent="save(false)" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, onMounted, ref } from '@nuxtjs/composition-api'
+import { defineComponent, reactive, onMounted, ref, useRoute } from '@nuxtjs/composition-api'
 import firebase from '../plugins/firebase'
 import { db, storage, auth } from "../plugins/firebase";
 
@@ -25,8 +26,10 @@ const List      = require("@editorjs/list");
 const ImageTool = require("@editorjs/image");
 
 // ボタンのコンポーネントに渡す変数
-const buttonLink = "/edit"
-const buttonTitle = "SAVE"
+const buttonLink1 = "/"
+const buttonTitle1 = "SAVE"
+const buttonLink2 = "/"
+const buttonTitle2 = "DRAFT"
 
 // input len : Number
 // return String charsからなるlen桁の文字列
@@ -47,13 +50,18 @@ export default defineComponent({
       post_id: undefined,
       mainImageUrl: "",
     })
+
+    const id = ref("")
+    const route = useRoute()
     
     const mainTitle = ref("")
     //子コンポーネントでアップロードした画像をimageFileに格納する
     const imageFile:any = ref("");
     let uid = ""
 
-    const init = ():void => {
+    const init = (article:any):void => {
+      mainTitle.value = article.title
+      data.mainImageUrl = article.mainImage
       // Editor.jsの初期化
       data.editor = new EditorJS({
         //Editor.jsの対象にするidを与える
@@ -88,10 +96,15 @@ export default defineComponent({
             },
           }
         }, 
+        data:{
+          time:article.time,
+          version:article.version,
+          blocks:article.blocks
+        },
       });
     }
 
-    const save = async () => {
+    const save = async (bool:boolean) => {
       // 普通にcurrentUserでユーザー情報とれた
       const user = auth.currentUser
       if(user) uid = user.uid
@@ -100,7 +113,7 @@ export default defineComponent({
         .save()
         .then(async (outputData:any) => {
           const tmpObj = {
-            isPublic : true,
+            isPublic : bool,
             title    : mainTitle.value,
             mainImage: "",
             docId    : "",
@@ -118,6 +131,12 @@ export default defineComponent({
         })
     }
 
+    const getFireArticle = async (docId:string) => {
+      if(docId){
+        const data = await db.collection('memo').doc(docId).get()
+        return data.data()
+      }
+    }
 
     const getImageFile = (file:File) => {
       imageFile.value = file;
@@ -136,18 +155,24 @@ export default defineComponent({
       data.mainImageUrl = downloadUrl
     };
 
-    onMounted(() => {
-      init()
+    onMounted(async () => {
+      id.value = route.value.params.id
+      const myArticle = await getFireArticle(id.value)
+      myArticle ? init(myArticle) : init({})
     })
 
     return {
       data,
       mainTitle,
-      buttonLink,
-      buttonTitle,
+      buttonLink1,
+      buttonLink2,
+      buttonTitle1,
+      buttonTitle2,
       save,
       getImageFile,
       saveStorage,
+      id, 
+      route
     }
   },
 })

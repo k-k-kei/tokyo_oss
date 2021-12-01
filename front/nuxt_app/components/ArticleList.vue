@@ -29,7 +29,7 @@
             <label for="listCheckbox" class="flex items-center">
               <input id="listCheckbox" type="checkbox" class="text-cGreen w-10" value="true">
             </label>
-            <NuxtLink :to="'/' + i + '/'" class="block px-4 py-3">
+            <NuxtLink :to="'/' + memo.id + '/'" class="block px-4 py-3">
               <h2 class="text-lg text-cMain tracking-wider font-bold inline-block w-10/12">
                 {{ memo.title }}
               </h2>
