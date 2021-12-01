@@ -1,9 +1,30 @@
 <template>
   <!-- <BaseInputImage /> -->
   <div>
-    {{ imageFile }}
-    <img :src="previewImage[0]" alt="" />
-    <input type="file" @change="selectImage" />
+    <img v-if="previewImage[0]" :src="previewImage[0]" :alt="imageFile" class="max-w-full w-full object-cover h-44" />
+    <div v-if="imageFile == ''">
+      <label
+        class="
+          w-full
+          flex flex-col
+          items-center
+          px-4
+          py-6
+          bg-cBase
+          cursor-pointer
+          text-cGray
+          ease-linear
+          transition-all
+          duration-150
+        "
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cGray" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+        </svg>
+        <span class="mt-2 text-base  text-cGray font-semibold leading-normal">画像を選択</span>
+        <input type="file" class="hidden" @change="selectImage" />
+      </label>
+    </div>
   </div>
 </template>
 
@@ -41,7 +62,7 @@ const saveStorage = (file:File) => {
 export default defineComponent({
   setup(props, context) {
     //アップロードした画像をプレビュー表示するための変数
-    const previewImage = ref([]);
+    const previewImage:any = ref([]);
     const imageFile = ref([]);
 
     const sendToParent = () => {

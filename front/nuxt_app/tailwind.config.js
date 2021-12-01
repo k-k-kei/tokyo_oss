@@ -28,7 +28,7 @@ module.exports = {
         'cWhite': '#fffcf1',
         'cBlack': '#171717',
         'cRed': '#DC2626',
-        'cGray': '#6f7372',
+        'cGray': '#9ca3af',
         'cPink': '#ea3f60',
         'cLemon': '#d2d200',
         'cGreen': '#00a096',
