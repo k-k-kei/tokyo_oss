@@ -3,13 +3,17 @@
     <div>
       <ArticleList :articles="data.articles" />
     </div>
+    <base-button  :title="buttonTitle" :link="buttonLink" @buttonEvent="logout" />
   </article-list-wrapper>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive } from '@nuxtjs/composition-api'
+import { auth } from '../plugins/firebase'
+
 
 export default defineComponent({
+  middleware : 'authCheck',
   setup () {
     const data = reactive({
       articles: [
@@ -28,8 +32,16 @@ export default defineComponent({
         { id: 13, img: 'https://assets.st-note.com/production/uploads/images/52827146/rectangle_large_type_2_99c7fa93d6f9a4e06aac91dbdf419aaa.jpg', title: 'コーヒースタンド向けのARプロトタイプを作った話', text: '直近、ARを使ったサービスプロトタイプを作成する機会がありました。その際、作ったコーヒースタンド向けARサービスの紹介と作成してみて気づいたARの価値についてまとめたいと思います。', created: '2021.4.14  10:00', like: 44, editor: 'KEI', editorImage: 'https://www.himalmag.com/wp-content/uploads/2019/07/sample-profile-picture.png', status: '下書き' }
       ]
     })
+    const buttonTitle = "logout"
+    const buttonLink  = "/"
+    const logout = () => {
+      auth.signOut()
+    }
     return {
-      data
+      data, 
+      buttonTitle,
+      buttonLink,
+      logout
     }
   }
 })

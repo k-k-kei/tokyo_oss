@@ -1,7 +1,7 @@
 <template>
   <!-- <BaseInputImage /> -->
   <div>
-    {{imageFile}}
+    {{ imageFile }}
     <img :src="previewImage[0]" alt="" />
     <input type="file" @change="selectImage" />
   </div>
