@@ -1,4 +1,5 @@
 <template>
+  <!-- <BaseInputImage /> -->
   <div>
     {{imageFile}}
     <img :src="previewImage[0]" alt="" />
@@ -12,7 +13,7 @@ import firebase from "firebase";
 
 
 //アップロードした画像をstorageとfirestoreに保存する関数
-const saveStorage = (file) => {
+const saveStorage = (file:File) => {
   //乱数を生成して保存する画像名の重複を防ぐ
   const randomNum = Math.floor(Math.random() * (1000 - 100));
   //storageに画像を保存
@@ -49,14 +50,14 @@ export default defineComponent({
 
 
     //アップロードボタンを押したら発火する関数
-    const selectImage = (e) => {
+    const selectImage = (e:any) => {
       // inputからfileデータを取得
       const file = e.target.files[0];
       const reader = new FileReader();
       reader.readAsDataURL(file);
 
       // アップロードした画像をプレビューで表示するために配列にpush
-      reader.onload = (e) => {
+      reader.onload = (e:any) => {
         previewImage.value.push(e.target.result);
       };
 

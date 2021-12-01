@@ -137,7 +137,7 @@ export default defineComponent({
     });
 
     //editer.jsで保存されたtypeによってclassをだしわけ
-    const textStyle = (type) => {
+    const textStyle = (type:any) => {
       if (type === "header") {
         return "StyleHeader";
       } else {
