@@ -27,6 +27,9 @@ export default defineComponent({
           });
         });
     });
+
+    console.log(memos.value)
+
     return {
       memos
     }

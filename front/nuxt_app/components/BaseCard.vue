@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col md:grid md:grid-cols-4 md:gap4 2xl:grid-cols-6">
-      <div v-for="(memo, i) in cards" :key="i" class="w-full flex flex-col mx-auto pt-4 pb-2 border-b-2 md:border-b-0 px-4">
-        <NuxtLink :to="'/' + i + '/'">
+      <div v-for="memo in cards" :key="memo.id" class="w-full flex flex-col mx-auto pt-4 pb-2 border-b-2 md:border-b-0 px-4">
+        <NuxtLink :to="'/' + memo.id ">
             <div v-if="memo.mainImage" class="w-full">
                 <img class="max-w-full object-cover h-44 rounded-md mx-auto" :src="memo.mainImage" :alt="memo.title">
             </div>
@@ -30,7 +30,7 @@
                       <p>{{ editorName }}</p>
                     </div>
                     <div class="text-xs text-cGray pl-2">
-                      <p>{{ created }}</p>
+                      <p>{{ changeDate(memo.time) }}</p>
                     </div>
                   </div>
                 </div>
@@ -55,10 +55,14 @@ export default defineComponent({
     const likeNum = 42
     const editorImage = "https://www.himalmag.com/wp-content/uploads/2019/07/sample-profile-picture.png"
     const editorName = "BIRD"
-    const created = '2021,11,3'
+
+    const changeDate = (time:number) :string =>{
+      const dateTime = new Date(time)
+      return dateTime.toLocaleDateString('ja-JP')
+    }
 
     return {
-      cardNum, likeNum, editorImage, editorName, created
+      cardNum, likeNum, editorImage, editorName, changeDate
     }
   },
 })
