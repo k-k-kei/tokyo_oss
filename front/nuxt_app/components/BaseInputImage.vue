@@ -39,10 +39,14 @@ import firebase from "firebase";
 
 
 export default defineComponent({
-  setup() {
+  setup(props, context) {
     //アップロードした画像をプレビュー表示するための変数
     const previewImage = ref([]);
     const imageFile = ref([]);
+
+    const sendToParent = () => {
+      context.emit("saveImageFile", imageFile);
+    }
 
 
     //アップロードボタンを押したら発火する関数
@@ -58,13 +62,13 @@ export default defineComponent({
       };
 
       imageFile.value = file.name;
-      console.log(imageFile.value);
+      sendToParent();
       // saveStorage(file);
     };
     return {
       selectImage,
       previewImage,
-      imageFile
+      imageFile,
     };
   },
 });

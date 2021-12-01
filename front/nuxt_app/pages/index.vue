@@ -18,6 +18,7 @@ export default defineComponent({
 
     onMounted(() => {
       db.collection("memo")
+        .orderBy('time', 'desc')
         .get()
         .then((querySnapshot: any) => {
           querySnapshot.forEach((doc: any) => {

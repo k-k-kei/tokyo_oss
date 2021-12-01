@@ -20,7 +20,7 @@
             <div class="text-xxs m-auto">つくる</div>
         </div>
     </NuxtLink>
-    <NuxtLink to="/mypage">
+    <NuxtLink to="/notes">
       <div class="flex flex-col pt-1 pb-2">
         <div class="md:px-5 px-3 pt-1 mx-auto">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
