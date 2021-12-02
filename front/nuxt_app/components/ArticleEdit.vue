@@ -7,6 +7,11 @@
     <div class="text-center mx-8 my-8">
       <select class="w-full text-center text-2xl font-bold focus:outline-none" v-model="evaluation">
         <option value="" disabled selected style="display:none;">外出先の評価を選択</option>
+        <option value="-5">-5</option>
+        <option value="-4">-4</option>
+        <option value="-3">-3</option>
+        <option value="-2">-2</option>
+        <option value="-1">-1</option>
         <option value="0">0</option>
         <option value="1">1</option>
         <option value="2">2</option>
