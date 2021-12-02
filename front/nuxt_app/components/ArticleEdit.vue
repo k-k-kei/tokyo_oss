@@ -191,8 +191,6 @@ export default defineComponent({
     };
 
     const evalPlace = (num:number) => {
-      console.log(evaluation)
-      console.log(evaluation.value)
       evaluation.value = String(num)
     }
 
