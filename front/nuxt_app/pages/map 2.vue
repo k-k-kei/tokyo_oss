@@ -29,7 +29,7 @@ const GOOGLE_MAPS_API_KEY = 'AIzaSyBbpYgXLDr3PWNAoWXhmTzdCTh7f8TlKsc'
 import { auth } from "../plugins/firebase";
 
 export default defineComponent({
-    setup(props, { emit }) {
+    setup() {
         const { coords } = useGeolocation()
         const currPos = computed(()=>({
                 lat: coords.value.latitude,
@@ -37,9 +37,6 @@ export default defineComponent({
         }))
 
         const otherPos = ref(null)
-        const sendPositionToParent = () => {
-          emit("latLng", otherPos.value);
-        }
 
         const loader = new Loader({ apiKey: GOOGLE_MAPS_API_KEY })
         const mapDiv = ref(null)
@@ -48,16 +45,15 @@ export default defineComponent({
         onMounted(async () => {
             await loader.load()
             map.value = new google.maps.Map(mapDiv.value, {
+                //遅れて入ってくる
                 center:currPos.value,
                 // center: {lat:35.68, lng:139.69 },
                 zoom:7
             })
             clickListener = map.value.addListener(
                 'click',
-                ({ latLng: { lat, lng} })=>{
-                  (otherPos.value = {lat: lat(), lng: lng()})
-                  sendPositionToParent()
-                }
+                ({ latLng: { lat, lng} })=>
+                    (otherPos.value = {lat: lat(), lng: lng()})
             )
         })
         onUnmounted(async() => {

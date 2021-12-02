@@ -16,7 +16,8 @@
       <div v-if="evaluation == '1'" class="m-4">😞</div>
       <div v-else class="opacity-50 m-4" @click="evalPlace(1)">😞</div>
     </div>
-    <layout-google-map />
+    <div>{{ mapPosition.lat }}{{ mapPosition.lng }}</div>
+    <layout-google-map @latLng='clickPosition'  />
     <div id="editorjs" class="mx-8 mt-4 tracking-wider"></div>
     <div class="text-center">
       <base-button :title="buttonTitle1" :link="buttonLink1" @buttonEvent="save(true)" />
@@ -140,8 +141,8 @@ export default defineComponent({
             mainImage: "",
             uid      : uid,
             like     : 0,
-            lat      : "",
-            lng      : "",
+            lat      : mapPosition.lat,
+            lng      : mapPosition.lng,
             author   : data.author,
             icon     : "",
             evaluation : evaluation.value,
@@ -195,6 +196,14 @@ export default defineComponent({
       evaluation.value = String(num)
     }
 
+    //LayoutGoogleMap.vueからデータを受け取る
+    const mapPosition:any = ref({})
+
+    const clickPosition = (position:any) =>{
+      console.log(position.lng)
+      mapPosition.value = { lat:position.lat, lng:position.lng }
+    }
+
     onMounted(async () => {
       id.value = route.value.params.id
       const myArticle = await getFireArticle(id.value)
@@ -217,6 +226,8 @@ export default defineComponent({
       save,
       getImageFile,
       saveStorage,
+      clickPosition,
+      mapPosition,
       id, 
       route, 
       evalPlace,
