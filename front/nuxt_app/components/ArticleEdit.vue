@@ -20,6 +20,7 @@
         <option value="5">5</option>
       </select>
     </div>
+    <layout-google-map />
     <div id="editorjs" class="mx-8 mt-4 tracking-wider"></div>
     <div class="text-center">
       <base-button :title="buttonTitle1" :link="buttonLink1" @buttonEvent="save(true)" />
