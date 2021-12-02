@@ -17,18 +17,17 @@ export default defineComponent({
     const memos = ref<any[]>([])
 
     onMounted(() => {
-      db.collection("memo")
-        .orderBy('time', 'desc')
+        db.collection("memo")
+        .where('isPublic', '==', true)
         .get()
         .then((querySnapshot: any) => {
           querySnapshot.forEach((doc: any) => {
             const dataObj = Object.assign(doc.data(), {id:doc.id}); 
             memos.value.push(dataObj)
+            memos.value.sort((memo1, memo2) => memo1.time > memo2.time ? -1 : 1)
           });
         });
     });
-
-    console.log(memos.value)
 
     return {
       memos
