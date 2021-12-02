@@ -129,21 +129,22 @@ export default defineComponent({
       if(!data.author || data.author == "No Name"){
         await db.collection('users').doc(uid).get()
         .then((user:any) => {
-          console.log(user.data())
+          console.log("usersコレクション内のデータ:",user.data())
           data.author = !user.data() ? "No Name" : user.data().name
         })
       }
       // editor部分をsaveするメソッド
       data.editor.save()
         .then(async (outputData:any) => {
+          console.log(mapPosition)
           const tmpObj = {
             isPublic : bool,
             title    : data.title,
             mainImage: "",
             uid      : uid,
             like     : 0,
-            lat      : mapPosition.lat,
-            lng      : mapPosition.lng,
+            lat      : mapPosition.value.lat,
+            lng      : mapPosition.value.lng,
             author   : data.author,
             icon     : "",
             evaluation : evaluation.value,
