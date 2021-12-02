@@ -22,7 +22,7 @@ export default defineComponent({
         .get()
         .then((querySnapshot: any) => {
           querySnapshot.forEach((doc: any) => {
-            const dataObj = Object.assign(doc.data(), {id:doc.id}); 
+            const dataObj = Object.assign(doc.data(), {id:doc.id});
             memos.value.push(dataObj)
             memos.value.sort((memo1, memo2) => memo1.time > memo2.time ? -1 : 1)
           });

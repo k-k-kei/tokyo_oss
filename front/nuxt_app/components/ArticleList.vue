@@ -4,31 +4,30 @@
       <div class="text-sm whitespace-nowrap">
         {{ articleNum }} 記事
       </div>
-      <!-- o-noteListHeader__sort -->
-      <div>
+      <!-- <div>
         <ul class="flex items-center">
           <li class="ml-8 text-sm whitespace-nowrap">
             <button class="flex items-center">
               公開ステータス
             </button>
           </li>
-          <!-- <li class="ml-8 text-sm whitespace-nowrap">
+          <li class="ml-8 text-sm whitespace-nowrap">
             <button class="flex items-center">
               期間
             </button>
-          </li> -->
+          </li>
         </ul>
-      </div>
+      </div> -->
     </header>
-    <!-- o-noteListNotes__body -->
+    <!-- articleList__body -->
     <ul class="relative z-50">
       <li v-for="(memo, id) in articles" :key="id">
-        <!-- o-articleList__item -->
+        <!-- articleList__item -->
         <div class="relative flex p-4 border-b border-solid border-concreteGray">
           <div class="flex justify-between w-full bg-teal-100 text-teal-900">
-            <label for="listCheckbox" class="flex items-center">
+            <!-- <label for="listCheckbox" class="flex items-center">
               <input id="listCheckbox" type="checkbox" class="text-cGreen w-10" value="true">
-            </label>
+            </label> -->
             <NuxtLink :to="'/' + memo.id + '/'" class="block px-4 py-3">
               <div class="items-start w-80">
                 <h2 class="text-lg text-cMain tracking-wider font-bold">
@@ -90,7 +89,7 @@ export default defineComponent({
 
     // 記事のドキュメントidを引数にとってfirestoreから削除する関数
     const deleteMemo = (id:string) => {
-      console.log(id)
+      // console.log(id)
       db.collection('memo').doc(id).delete().then(() => {
         alert('削除完了！')
         router.push('/')
