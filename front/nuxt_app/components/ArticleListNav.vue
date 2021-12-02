@@ -10,12 +10,12 @@
         </a>
       </li>
       <li class="relative z-0 flex items-center w-full py-2 px-0 text-base hover:bg-gray-200 hover:rounded-sm">
-        <a href="/notes/public" class="relative z-0 flex items-center w-full">
+        <a href="/notes_public" class="relative z-0 flex items-center w-full">
           公開中
         </a>
       </li>
       <li class="relative z-0 flex items-center w-full py-2 px-0 text-base hover:bg-gray-200 hover:rounded-sm">
-        <a href="/notes/draft" class="relative z-0 flex items-center w-full">
+        <a href="/notes_draft" class="relative z-0 flex items-center w-full">
           下書き
         </a>
       </li>
