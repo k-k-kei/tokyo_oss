@@ -14,25 +14,42 @@
             <div class="mt-2">
                 <h3 class="text-base text-cGray tracking-wider line-clamp-2 md:line-clamp-2">{{ memo.blocks[0].data.text }}</h3>
             </div>
-            <div class="mt-2 flex items-center">
+
+            <div v-if="memo.like" class="mt-2 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-cPink" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+                <span class="text-sm text-cPink ml-1 tracking-wider line-clamp-2 md:line-clamp-4">{{ memo.like }}</span>
+            </div>
+            <div v-else class="mt-2 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-cPink" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
                 <span class="text-sm text-cPink ml-1 tracking-wider line-clamp-2 md:line-clamp-4">{{ likeNum }}</span>
             </div>
+
             <div class="mt-2">
                 <div class="flex items-center">
-                  <div>
+                  <div v-if="memo.icon">
+                    <img class="max-w-full w-8 rounded-full" :src="memo.icon" :alt="editorImage">
+                  </div>
+                  <div v-else>
                     <img class="max-w-full w-8 rounded-full" :src="editorImage" :alt="editorImage">
                   </div>
+
                   <div class="flex flex-col ">
-                    <div class="text-xs text-cGray pl-2">
+                    <div v-if="memo.author" class="text-xs text-cGray pl-2">
+                      <p>{{ memo.author }}</p>
+                    </div>
+                    <div v-else class="text-xs text-cGray pl-2">
                       <p>{{ editorName }}</p>
                     </div>
+
                     <div class="text-xs text-cGray pl-2">
                       <p>{{ changeDate(memo.time) }}</p>
                     </div>
                   </div>
+
                 </div>
             </div>
         </NuxtLink>
@@ -53,9 +70,9 @@ export default defineComponent({
   },
   setup(props) {
     const cardNum = computed(() => props.cards.length)
-    const likeNum = 42
-    const editorImage = "https://www.himalmag.com/wp-content/uploads/2019/07/sample-profile-picture.png"
-    const editorName = "BIRD"
+    const likeNum = 0
+    const editorImage = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+    const editorName = "No Name"
 
     return {
       cardNum, likeNum, editorImage, editorName, changeDate
