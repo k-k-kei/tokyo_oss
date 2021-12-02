@@ -35,7 +35,7 @@
                   {{ memo.title }}
                 </h2>
                 <div class="text-xs text-cGray pl-2 mb-1">
-                  <span v-if="memo.isPublic"><span class="text-sm text-cGreen">● </span>公開中</span><span v-else><span class="text-sm">○ </span>下書き</span> ・ {{ changeDate(memo.time) }} {{ changeTime(memo.time) }} ・ {{ memo.uid }}
+                  <span v-if="memo.isPublic"><span class="text-sm text-cGreen">● </span>公開中</span><span v-else><span class="text-sm">○ </span>下書き</span> ・ {{ changeDate(memo.time) }} {{ changeTime(memo.time) }}
                 </div>
               </div>
             </Nuxtlink>
