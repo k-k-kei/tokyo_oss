@@ -18,24 +18,36 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from '@nuxtjs/composition-api'
-import { db, storageRef, auth } from '../plugins/firebase'
+import { db, auth } from '../plugins/firebase'
 
 export default defineComponent({
   middleware: 'authCheck',
   setup () {
     const memos = ref<any[]>([])
+    const userId = ref('')
+
+    auth.onAuthStateChanged((user:any) => {
+      if (user) {
+        userId.value = user.uid
+        console.log(userId.value)
+      } else {
+        console.log('Not login')
+      }
+    })
+
     onMounted(() => {
       db.collection('memo')
         .orderBy('time', 'desc')
         .get()
         .then((querySnapshot: any) => {
           querySnapshot.forEach((doc: any) => {
-            const dataArray = Object.assign(doc.data(), { id: doc.id })
-            memos.value.push(dataArray)
+            if (doc.data().uid === userId.value) {
+              const dataArray = Object.assign(doc.data(), { id: doc.id })
+              memos.value.push(dataArray)
+            }
           })
         })
     })
-
     const buttonTitle = 'ログアウト'
     return {
       buttonTitle,
