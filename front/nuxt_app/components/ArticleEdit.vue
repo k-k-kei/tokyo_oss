@@ -4,21 +4,17 @@
     <div class="text-center mx-8 my-8">
       <input type="text" class="w-full text-center text-2xl font-bold focus:outline-none" placeholder="記事タイトル" v-model="data.title">
     </div>
-    <div class="text-center mx-8 my-8">
-      <select class="w-full text-center text-2xl font-bold focus:outline-none" v-model="evaluation">
-        <option value="" disabled selected style="display:none;">外出先の評価を選択</option>
-        <option value="-5">-5</option>
-        <option value="-4">-4</option>
-        <option value="-3">-3</option>
-        <option value="-2">-2</option>
-        <option value="-1">-1</option>
-        <option value="0">0</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-      </select>
+    <div class="flex justify-center text-4xl mx-8 my-8">
+      <div v-if="evaluation == '5'" class="m-4">😆</div>
+      <div v-else class="opacity-50 m-4" @click="evalPlace(5)">😆</div>
+      <div v-if="evaluation == '4'" class="m-4">😀</div>
+      <div v-else class="opacity-50 m-4" @click="evalPlace(4)">😀</div>
+      <div v-if="evaluation == '3'" class="m-4">🙂</div>
+      <div v-else class="opacity-50 m-4" @click="evalPlace(3)">🙂</div>
+      <div v-if="evaluation == '2'" class="m-4">😕</div>
+      <div v-else class="opacity-50 m-4" @click="evalPlace(2)">😕</div>
+      <div v-if="evaluation == '1'" class="m-4">😞</div>
+      <div v-else class="opacity-50 m-4" @click="evalPlace(1)">😞</div>
     </div>
     <div id="editorjs" class="mx-8 mt-4 tracking-wider"></div>
     <div class="text-center">
@@ -67,7 +63,7 @@ export default defineComponent({
       post_id: undefined,
       mainImageUrl: "",
     })
-    const evaluation = ref("")
+    const evaluation = ref("3")
     const route = useRoute()
 
     const id = ref("")
@@ -79,6 +75,7 @@ export default defineComponent({
       data.title        = article.title
       data.mainImageUrl = article.mainImage
       data.author       = article.author
+      evaluation.value  = article.evaluation
       // Editor.jsの初期化
       data.editor = new EditorJS({
         //Editor.jsの対象にするidを与える
@@ -193,6 +190,12 @@ export default defineComponent({
       data.mainImageUrl = downloadUrl
     };
 
+    const evalPlace = (num:number) => {
+      console.log(evaluation)
+      console.log(evaluation.value)
+      evaluation.value = String(num)
+    }
+
     onMounted(async () => {
       id.value = route.value.params.id
       const myArticle = await getFireArticle(id.value)
@@ -216,7 +219,8 @@ export default defineComponent({
       getImageFile,
       saveStorage,
       id, 
-      route,
+      route, 
+      evalPlace,
       evaluation
     }
   },
