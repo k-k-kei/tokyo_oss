@@ -75,6 +75,7 @@ export default defineComponent({
     const init = (article:any):void => {
       data.title        = article.title
       data.mainImageUrl = article.mainImage
+      console.log(data.mainImageUrl)
       data.author       = article.author
       evaluation.value  = article.evaluation
       // Editor.jsの初期化
@@ -124,11 +125,11 @@ export default defineComponent({
       const user = auth.currentUser
       if(user) uid = user.uid
 
-      if(!data.author){
+      if(!data.author || data.author == "No Name"){
         await db.collection('users').doc(uid).get()
-        .then((user) => {
+        .then((user:any) => {
           console.log(user.data())
-          data.author = user.data().name
+          data.author = !user.data() ? "No Name" : user.data().name
         })
       }
       // editor部分をsaveするメソッド
@@ -150,7 +151,9 @@ export default defineComponent({
           if(imageFile.value !== ""){
             await saveStorage(imageFile.value)
             tmpObj.mainImage = data.mainImageUrl
-          } 
+          } else if(data.mainImageUrl){
+            tmpObj.mainImage = data.mainImageUrl
+          }
 
           const articleData = Object.assign(outputData, tmpObj)
 
@@ -200,7 +203,6 @@ export default defineComponent({
       const myArticle = await getFireArticle(id.value)
 
       if(myArticle){
-        data.mainImage = myArticle.mainImage
         init(myArticle)
       } else {
         init({})
