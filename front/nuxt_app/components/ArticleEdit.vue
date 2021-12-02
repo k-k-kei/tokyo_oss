@@ -2,7 +2,18 @@
   <div class="min-h-screen flex flex-col">
     <BaseInputImage @saveImageFile="getImageFile" :imageUrl="data.mainImageUrl"/>
     <div class="text-center mx-8 my-8">
-      <input type="text" class="w-full text-center text-2xl font-bold focus:outline-none" placeholder="記事タイトル" v-model="mainTitle">
+      <input type="text" class="w-full text-center text-2xl font-bold focus:outline-none" placeholder="記事タイトル" v-model="data.title">
+    </div>
+    <div class="text-center mx-8 my-8">
+      <select class="w-full text-center text-2xl font-bold focus:outline-none" v-model="evaluation">
+        <option value="" disabled selected style="display:none;">外出先の評価を選択</option>
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+      </select>
     </div>
     <div id="editorjs" class="mx-8 mt-4 tracking-wider"></div>
     <div class="text-center">
@@ -44,13 +55,14 @@ export default defineComponent({
   setup() {
     const data:any = reactive({
       editor: undefined,
+      author: undefined,
       title: "",
       mainText: "",
       interval_handler: undefined,
       post_id: undefined,
       mainImageUrl: "",
     })
-
+    const evaluation = ref("")
     const route = useRoute()
 
     const id = ref("")
@@ -59,8 +71,9 @@ export default defineComponent({
     let uid = ""
 
     const init = (article:any):void => {
-      mainTitle.value   = article.title
+      data.title        = article.title
       data.mainImageUrl = article.mainImage
+      data.author       = article.author
       // Editor.jsの初期化
       data.editor = new EditorJS({
         //Editor.jsの対象にするidを与える
@@ -107,16 +120,30 @@ export default defineComponent({
       // 普通にcurrentUserでユーザー情報とれた
       const user = auth.currentUser
       if(user) uid = user.uid
+
+      if(!data.author){
+        await db.collection('users').doc(uid).get()
+        .then((user) => {
+          console.log(user.data())
+          data.author = user.data().name
+        })
+      }
       // editor部分をsaveするメソッド
       data.editor.save()
         .then(async (outputData:any) => {
           const tmpObj = {
             isPublic : bool,
-            title    : mainTitle.value,
+            title    : data.title,
             mainImage: "",
-            docId    : "",
-            uid      : uid
+            uid      : uid,
+            like     : 0,
+            LAT      : "",
+            LON      : "",
+            author   : data.author,
+            icon     : "",
+            evaluation : evaluation.value,
           }
+          console.log(tmpObj)
           if(imageFile.value !== ""){
             await saveStorage(imageFile.value)
             tmpObj.mainImage = data.mainImageUrl
@@ -125,9 +152,11 @@ export default defineComponent({
           const articleData = Object.assign(outputData, tmpObj)
 
           if(id.value){
+            console.log("aaa", articleData)
             db.collection('memo').doc(id.value).set(articleData)
             console.log("update your article!! :", articleData)
           }else{
+            console.log("bbb", articleData)
             db.collection('memo').add(articleData)
             console.log("saved on firestore!! :", articleData)
           }
@@ -182,7 +211,8 @@ export default defineComponent({
       getImageFile,
       saveStorage,
       id, 
-      route
+      route,
+      evaluation
     }
   },
 })
