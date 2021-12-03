@@ -63,7 +63,7 @@
               .then((user) => {
                 console.log("success login! :", user)
                 //ログインが完了した後の処理を書いていく
-                router.push('/profileEdit')
+                router.push('/')
               })
               .catch((error) => {
                 alert(error)
