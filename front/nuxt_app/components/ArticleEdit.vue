@@ -70,6 +70,7 @@ export default defineComponent({
       interval_handler: undefined,
       post_id: undefined,
       mainImageUrl: "",
+      icon:''
     })
     const evaluation = ref("3")
     const route = useRoute()
@@ -137,6 +138,7 @@ export default defineComponent({
         .then((user:any) => {
           console.log("usersコレクション内のデータ:",user.data())
           data.author = !user.data() ? "No Name" : user.data().name
+          data.icon = !user.data() ? '' : user.data().icon
         })
       }
       // editor部分をsaveするメソッド
@@ -152,7 +154,7 @@ export default defineComponent({
             lat      : mapPosition.value.lat,
             lng      : mapPosition.value.lng,
             author   : data.author,
-            icon     : "",
+            icon     : data.icon,
             evaluation : evaluation.value,
           }
           console.log(tmpObj)
