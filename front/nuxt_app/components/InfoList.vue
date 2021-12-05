@@ -7,7 +7,7 @@
     </header>
     <!-- articleList__body -->
     <ul class="relative z-50">
-      <li v-for="(memo, id) in articles" :key="id">
+      <li v-for="(memo, id) in infos" :key="id">
         <!-- articleList__item -->
         <div class="relative flex p-4 border-b border-solid border-concreteGray">
           <div class="flex justify-center w-full bg-teal-100 text-teal-900">
@@ -27,7 +27,7 @@
                     ・ {{ "著者:" + memo.author }}, {{ changeDate(memo.time) }} {{ changeTime(memo.time) }}
                 </div>
 
-                <p class="text-xl text-cGray">{{ memo.evaluation ? evaluation[memo.evaluation-1] : '☆☆☆☆☆' }}, <span class="text-xs">経緯度:({{Math.round(memo.lat*10000)/10000}}, {{Math.round(memo.lng*10000)/10000}})</span></p>
+                <p class="text-xl text-cGray">{{ memo.evaluation ? evaluation[memo.evaluation-1] : '☆☆☆☆☆' }}, <span class="text-xs">lat:{{Math.round(memo.lat*10000)/10000}}, lng:{{Math.round(memo.lng*10000)/10000}}</span></p>
               </div>
             </Nuxtlink>
             <!-- image分岐 -->
@@ -44,7 +44,7 @@
             <div class="flex items-center m-2">
               <button 
                 class="text-sm w-12 p-2 align-center rounded border-2 hover:border-gray-600" 
-                @click="deleteMemo(memo.id)"
+                @click="changePublic(memo.id)"
               >
                 {{ memo.isPublic ? '隠す' : '公開' }}
               </button>
@@ -57,7 +57,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useRouter, computed, ref } from '@nuxtjs/composition-api'
+import { defineComponent, useRouter, computed, ref, toRefs, onMounted } from '@nuxtjs/composition-api'
 import { db } from '../plugins/firebase'
 import changeDate from '../composable/changeDate'
 import changeTime from '../composable/changeTime'
@@ -73,24 +73,45 @@ export default defineComponent({
   setup (props) {
     const articleNum = computed(() => props.articles.length)
     const defaultImage = '/images/sotoburo.png'
+    const { articles } = toRefs(props)
+    const infos:any = ref()
     const userId = ref('')
     const evaluation = ['⭐︎★★★★', '⭐︎⭐︎★★★', '⭐︎⭐︎⭐︎★★', '⭐︎⭐︎⭐︎⭐︎★', '⭐︎⭐︎⭐︎⭐︎⭐︎']
 
     const router = useRouter()
-
     // 記事のドキュメントidを引数にとってfirestoreから削除する関数
-    const deleteMemo = (id:string) => {
-      const doc:any =  props.articles.find((el:any) => el.id === id)
-      db.collection('memo').doc(id).update({
-        isPublic : !doc.isPublic
-      }).then(() => {
-        location.reload
-        router.push('/admin')
+    const changePublic = (id:string) => {
+      console.log(infos.value, articles.value)
+      
+      infos.value = infos.value.map((el:any) => {
+        if(el.id === id){
+          console.log("id:",id," el:", el.isPublic)
+          db.collection('memo').doc(id).update({
+            isPublic : !el.isPublic
+          })
+          return Object.assign(el, {isPublic:!el.isPublic})
+        } else {
+          return el
+        }
       })
     }
 
+    onMounted(() => {
+      setTimeout(() => {
+        infos.value = articles.value
+        console.log(infos.value)
+      }, 1000)
+    })
+
     return {
-      articleNum, defaultImage, userId, changeDate, changeTime, deleteMemo, evaluation
+      articleNum, 
+      defaultImage, 
+      userId, 
+      changeDate, 
+      changeTime, 
+      changePublic, 
+      evaluation, 
+      infos
     }
   }
 })
