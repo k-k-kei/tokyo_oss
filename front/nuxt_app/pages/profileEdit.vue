@@ -20,7 +20,7 @@
       @click="addProfile(name, category)"
       class="w-1/3 block mx-auto mt-6 bg-cAcc  py-2 rounded text-white shadow-lg font-semibold"
     >
-      プロフィール登録
+      登録
     </button>
     </div>
   </div>
@@ -37,14 +37,15 @@
       return a + chars.charAt(Math.floor(Math.random() * chars.length))
     }, "")
   }
+
   export default defineComponent({
     components: { InputAuto },
     middleware : 'authCheck',
       setup(){
         const name = ref('')
-        const nameLabel = ref('')
+        const nameLabel = ref('ニックネーム')
         const category = ref('')
-        const categoryLabel = ref('')
+        const categoryLabel = ref('カテゴリ')
         const imageFile:any = ref('')
         const icon = ref('')
         const uid = ref('')

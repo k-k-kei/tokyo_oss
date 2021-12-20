@@ -21,6 +21,10 @@
       >
         ログイン
       </button>
+      <button  @click="googleSignIn"
+        class="w-1/3 block mx-auto mt-6 bg-cAcc  py-2 rounded text-white shadow-lg font-semibold">
+        Google認証
+      </button>
     </div>
     <div v-else>
       <LogoutButton />
@@ -29,8 +33,10 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent,computed,ref, useRouter} from '@nuxtjs/composition-api'
-  import { auth } from '../plugins/firebase'
+  import { defineComponent, computed,ref, useRouter} from '@nuxtjs/composition-api'
+  import { auth, db } from '../plugins/firebase'
+  import firebase from 'firebase';
+  import 'firebase/auth'
 
   export default defineComponent({
       setup(){
@@ -47,10 +53,19 @@
           pass.value = value
         }
 
+        auth.getRedirectResult()
+          .then(async (result) => {
+            if(result.user) {
+              db.collection('users').doc(result.user.uid).get()
+                .then((doc) => {
+                  doc.exists ? router.push('/') : router.push('/profileEdit')
+                })
+            }
+        })
+
         auth.onAuthStateChanged((user:any) => {
           if(user){
             userId.value = user.uid
-            console.log(userId.value)
           }else{
             console.log('Not login')
           }
@@ -73,13 +88,19 @@
           }
         }
 
+        const googleSignIn = async () => {
+          const provider = new firebase.auth.GoogleAuthProvider()
+          auth.signInWithRedirect(provider)
+        }
+
         return {
           email,
           pass,
           changeEmail,
           changePassword,
           signUpWithEmail,
-          userId
+          userId,
+          googleSignIn
         }
       }
   })
