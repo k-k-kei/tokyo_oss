@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col md:grid md:grid-cols-4 md:gap4 2xl:grid-cols-6">
       <div v-for="memo in cards" :key="memo.id" class="w-full flex flex-col mx-auto pt-4 pb-2 border-b-2 md:border-b-0 px-4">
-        <NuxtLink :to="'/' + memo.id ">
+        <NuxtLink :to="'/articles/' + memo.id ">
             <div v-if="memo.mainImage" class="w-full">
                 <img class="max-w-full object-cover h-44 rounded-md mx-auto" :src="memo.mainImage" :alt="memo.title">
             </div>
