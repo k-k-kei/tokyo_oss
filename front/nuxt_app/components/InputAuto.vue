@@ -22,13 +22,11 @@ export default defineComponent({
     props:{
       typeName   : String as PropType<string | undefined>,
       inputTitle : String as PropType<string | undefined>,
-      handicaps  : Array
+      handicaps  : Array as PropType<Array<string>>
     },
     emit:['update:modelValue','change'],
     setup() {
-        const handicaps = ["a", "b", "c"]
       return{
-        handicaps
       }
     },
 })

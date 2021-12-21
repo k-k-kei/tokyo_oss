@@ -48,7 +48,7 @@
             auth.createUserWithEmailAndPassword(email,password)
               .then((user) => {
                 //登録完了した後の処理を書いていく
-                  router.push('/')
+                  router.push('/profileEdit')
               })
               .catch((error) => {
                 alert(error)

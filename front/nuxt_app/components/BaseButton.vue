@@ -1,11 +1,11 @@
 <template>
-    <NuxtLink :to="buttonLink">
-        <button @click="buttonEvent" class="bg-cAcc rounded">
-            <div class="text-cBase px-4 py-2 text-xs md:text-sm">
-                <span>{{ buttonTitle }}</span>
-            </div>
-        </button>
-    </NuxtLink>
+  <NuxtLink :to="buttonLink">
+    <button @click="buttonEvent" class="bg-cAcc rounded">
+      <div class="text-cBase px-4 py-2 text-xs md:text-sm">
+        <span>{{ buttonTitle }}</span>
+      </div>
+    </button>
+  </NuxtLink>
 </template>
 
 <script lang="ts">

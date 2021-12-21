@@ -4,7 +4,9 @@
     <div class="text-center mx-8 my-8">
       <input type="text" class="w-full text-center text-2xl font-bold focus:outline-none" placeholder="記事タイトル" v-model="data.title">
     </div>
-    <div class="flex justify-center text-4xl mx-8 my-8">
+    <div id="editorjs" class="mx-8 mt-4 tracking-wider"></div>
+    <div class="text-center text-lg text-cGray font-semibold"><span>感想をおしえてください</span></div>
+    <div class="flex justify-center text-4xl mx-8 mb-4">
       <div v-if="evaluation == '5'" class="m-4">😆</div>
       <div v-else class="opacity-50 m-4" @click="evalPlace(5)">😆</div>
       <div v-if="evaluation == '4'" class="m-4">😀</div>
@@ -16,10 +18,14 @@
       <div v-if="evaluation == '1'" class="m-4">😞</div>
       <div v-else class="opacity-50 m-4" @click="evalPlace(1)">😞</div>
     </div>
-    <div>{{ mapPosition.lat }}{{ mapPosition.lng }}</div>
+    <div class="text-center text-lg text-cGray font-semibold"><span>行った場所をクリックしてください</span></div>
+    <div v-if="mapPosition.lat" class="text-center font-semibold text-sm my-4 text-cGray">
+      <p>緯度：{{ mapPosition.lat }}</p>
+      <p>経度：{{ mapPosition.lng }}</p>
+    </div>
+    <div v-else class="text-center font-semibold text-sm my-4 text-cGray"><p>クリックした場所の緯度経度が表示されます</p></div>
     <layout-google-map @latLng='clickPosition'  />
-    <div id="editorjs" class="mx-8 mt-4 tracking-wider"></div>
-    <div class="text-center">
+    <div class="text-center mt-12 mb-8">
       <base-button :title="buttonTitle1" :link="buttonLink1" @buttonEvent="save(true)" />
       <base-button :title="buttonTitle2" :link="buttonLink2" @buttonEvent="save(false)" />
     </div>
@@ -64,6 +70,7 @@ export default defineComponent({
       interval_handler: undefined,
       post_id: undefined,
       mainImageUrl: "",
+      icon:''
     })
     const evaluation = ref("3")
     const route = useRoute()
@@ -131,6 +138,7 @@ export default defineComponent({
         .then((user:any) => {
           console.log("usersコレクション内のデータ:",user.data())
           data.author = !user.data() ? "No Name" : user.data().name
+          data.icon = !user.data() ? '' : user.data().icon
         })
       }
       // editor部分をsaveするメソッド
@@ -146,7 +154,7 @@ export default defineComponent({
             lat      : mapPosition.value.lat,
             lng      : mapPosition.value.lng,
             author   : data.author,
-            icon     : "",
+            icon     : data.icon,
             evaluation : evaluation.value,
           }
           console.log(tmpObj)
@@ -204,7 +212,6 @@ export default defineComponent({
     const mapPosition:any = ref({})
 
     const clickPosition = (position:any) =>{
-      console.log(position.lng)
       mapPosition.value = { lat:position.lat, lng:position.lng }
     }
 

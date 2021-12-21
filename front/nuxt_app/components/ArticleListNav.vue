@@ -33,15 +33,49 @@
         </a>
       </li>
     </ul>
+    <div v-if="data.admin">
+      <hr>
+      <h1 class="text-xl font-bold w-40 leading-6 mt-8 mb-4">
+        管理者メニュー
+      </h1>
+      <ul class="w-full pb-4 mb-4">
+        <li class="relative z-0 flex items-center w-full py-2 px-0 text-base hover:bg-gray-200 hover:rounded-sm">
+          <NuxtLink to="/admin" class="relative z-0 flex items-center w-full">
+            管理画面
+          </NuxtLink>
+        </li>
+      </ul>
+    </div>
   </nav>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent, onMounted, reactive } from '@nuxtjs/composition-api'
+import { db, auth } from '../plugins/firebase'
 
 export default defineComponent({
   setup () {
+    const data:any = reactive({
+      uid:"",
+      admin:false
+    })
 
+    onMounted(() => {
+      auth.onAuthStateChanged(async (user:any) => {
+        data.uid = user.uid
+        data.admin = await getUserInfo(data.uid)
+      })
+    })
+
+    const getUserInfo = async (id:string) => {
+      let admin = false
+      await db.collection('users').doc(id).get()
+        .then((user:any) => admin = user.data().admin)
+      return admin
+    }
+    return {
+      data
+    }
   }
 })
 </script>

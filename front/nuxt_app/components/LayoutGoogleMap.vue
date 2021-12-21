@@ -1,20 +1,6 @@
 <template>
     <div>
-        <div>
-            <div>
-                <h4>Your Position</h4>
-                Latitude:{{ currPos.lat.toFixed(2) }}, Longitude:{{ currPos.lng.toFixed(2) }}
-            </div>
-            <div>
-                <h4>Click Position</h4>
-                <span v-if="otherPos">
-                    Latitude:{{ otherPos.lat.toFixed(2) }},
-                    Longitude:{{ otherPos.lng.toFixed(2) }}
-                </span>
-                <span v-else>Click the map to select a position</span>
-            </div>
-        </div>
-        <div ref="mapDiv" style="width:100%; height: 80vh" />
+        <div ref="mapDiv" class="w-full " style="height: 80vh" />
     </div>
 </template>
 
@@ -49,8 +35,7 @@ export default defineComponent({
             await loader.load()
             map.value = new google.maps.Map(mapDiv.value, {
                 center:currPos.value,
-                // center: {lat:35.68, lng:139.69 },
-                zoom:7
+                zoom:14
             })
             clickListener = map.value.addListener(
                 'click',
