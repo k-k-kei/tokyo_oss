@@ -56,9 +56,23 @@
         auth.getRedirectResult()
           .then(async (result) => {
             if(result.user) {
-              db.collection('users').doc(result.user.uid).get()
-                .then((doc) => {
-                  doc.exists ? router.push('/') : router.push('/profileEdit')
+              console.log(result)
+              const user = result.user
+              db.collection('users').doc(user.uid).get()
+                .then(async (doc) => {
+                  if(doc.exists){
+                    router.push('/')
+                  } else {
+                    console.log(user.uid, user.photoURL)
+                    await db.collection('users').doc(user.uid).set({
+                      uid:  user.uid,
+                      admin:false,
+                      icon: user.photoURL,
+                      name: user.displayName
+                    })
+                    .then(() => router.push('/profileEdit'))
+
+                  }
                 })
             }
         })
