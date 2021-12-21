@@ -142,7 +142,8 @@ export default defineComponent({
     });
 
     const addLike = () => {
-      like.value = like.value + 1
+      if(!like.value) return
+      like.value += 1
       db.collection('memo').doc(id).update({
         like:like.value
       })
