@@ -3,11 +3,13 @@
     <h1 class="text-xl font-bold w-40 leading-6 mt-2 mb-4">
       記事
     </h1>
-    <ul class="w-full pb-4 mb-4">
-      <li data-is-current="true" class="before:absolute before:mt-0 -ml-4 before:block before:w-0.5 before:h-full before:bg-black relative z-0 flex items-center w-full h-full py-2 px-0 text-base">
-        <a href="/notes" aria-current="page" class="relative z-0 flex items-center w-full pl-4 font-bold">
-          すべて
-        </a>
+    <ul class="tabWrap w-full pb-4 mb-4">
+      <li @click="select('1')">
+        <div class="before:absolute before:mt-0 -ml-4 before:block before:w-0.5 before:h-full before:bg-black relative z-0 flex items-center w-full h-full py-2 px-0 text-base">
+          <a href="/notes" aria-current="page" class="relative z-0 flex items-center w-full pl-4 font-bold">
+            すべて
+          </a>
+        </div>
       </li>
       <li class="relative z-0 flex items-center w-full py-2 px-0 text-base hover:bg-gray-200 hover:rounded-sm">
         <a href="/notes_public" class="relative z-0 flex items-center w-full">

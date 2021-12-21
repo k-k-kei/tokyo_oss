@@ -78,7 +78,7 @@ export default defineComponent({
       // console.log(id)
       db.collection('memo').doc(id).delete().then(() => {
         alert('削除完了！')
-        router.push('/')
+        router.push('/notes')
       })
     }
 

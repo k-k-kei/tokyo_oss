@@ -62,6 +62,18 @@
         </div>
       </li>
     </ul>
+    <v-container>
+      <!-- local filter -->
+      <h2>Mustash</h2>
+      <p>{{ price | numberFormat }}</p>
+      <p>{{ text | toUpperCase }}</p>
+      <h2>b-vind</h2>
+      <input type="text" :value="price | numberFormat">
+      <input type="text" :value="text | toUpperCase">
+    </v-container>
+    <button @click="upperCaseMessage">
+      To upper case
+    </button>
   </div>
 </template>
 
@@ -72,11 +84,27 @@ import changeDate from '../composable/changeDate'
 import changeTime from '../composable/changeTime'
 
 export default defineComponent({
+  filters: {
+    sortPubric:() => {
+      return memo.isPublic === true ?
+    },
+    readMore: (text, length, suffix) => {
+      return text.length > 4 ? text.substring(0, length) + suffix : text
+    }
+  },
   // 親コンポーネントから受け取った配列をpropsとして定義
   props: {
     articles: {
       type: Array,
       required: true
+    },
+    price: {
+      type: Number,
+      default: 25400
+    },
+    text: {
+      type: String,
+      default: 'Hello, Nuxt.js!'
     }
   },
 
@@ -95,7 +123,6 @@ export default defineComponent({
         router.push('/')
       })
     }
-
     return {
       articleNum, defaultImage, userId, changeDate, changeTime, deleteMemo
     }
