@@ -33,90 +33,93 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, computed,ref, useRouter} from '@nuxtjs/composition-api'
+  import { defineComponent, computed, ref, useRouter} from '@nuxtjs/composition-api'
   import { auth, db } from '../plugins/firebase'
   import firebase from 'firebase';
   import 'firebase/auth'
 
   export default defineComponent({
-      setup(){
-        const email = ref('')
-        const pass = ref('')
-        const userId = ref('')
-        const router = useRouter()
+    setup(){
+      const email = ref('')
+      const pass = ref('')
+      const userId = ref('')
+      const router = useRouter()
 
-        const changeEmail = (value: any) => {
-          email.value = value
-        }
+      const changeEmail = (value: any) => {
+        email.value = value
+      }
 
-        const changePassword = (value: any) => {
-          pass.value = value
-        }
+      const changePassword = (value: any) => {
+        pass.value = value
+      }
 
-        auth.getRedirectResult()
-          .then(async (result) => {
-            if(result.user) {
-              console.log(result)
-              const user = result.user
-              db.collection('users').doc(user.uid).get()
-                .then(async (doc) => {
-                  if(doc.exists){
-                    router.push('/')
-                  } else {
-                    console.log(user.uid, user.photoURL)
-                    await db.collection('users').doc(user.uid).set({
-                      uid:  user.uid,
-                      admin:false,
-                      icon: user.photoURL,
-                      name: user.displayName
-                    })
-                    .then(() => router.push('/profileEdit'))
+      // google認証
+      // サインインした後、ログインページにリダイレクトされる
+      const googleSignIn = () => {
+        const provider = new firebase.auth.GoogleAuthProvider()
+        auth.signInWithRedirect(provider)
+      }
 
-                  }
-                })
-            }
-        })
-
-        auth.onAuthStateChanged((user:any) => {
-          if(user){
-            userId.value = user.uid
-          }else{
-            console.log('Not login')
-          }
-        })
-
-        //新規登録処理
-        const signUpWithEmail = async (email:string,password:string) => {
-          try{
-            auth.signInWithEmailAndPassword(email,password)
-              .then((user) => {
-                console.log("success login! :", user)
-                //ログインが完了した後の処理を書いていく
-                router.push('/')
-              })
-              .catch((error) => {
-                alert(error)
-              })
-          }catch(error){
-            alert(error)
-          }
-        }
-
-        const googleSignIn = async () => {
-          const provider = new firebase.auth.GoogleAuthProvider()
-          auth.signInWithRedirect(provider)
-        }
-
-        return {
-          email,
-          pass,
-          changeEmail,
-          changePassword,
-          signUpWithEmail,
-          userId,
-          googleSignIn
+      // 新規登録
+      const signUpWithEmail = async (email:string,password:string) => {
+        try{
+          auth.signInWithEmailAndPassword(email,password)
+            .then((user) => {
+              console.log("success login! :", user)
+              //ログインが完了した後の処理を書いていく
+              router.push('/')
+            })
+            .catch((error) => {
+              alert(error)
+            })
+        }catch(error){
+          alert(error)
         }
       }
+
+      // google認証後のリダイレクト時にGoogle認証情報を取得
+      auth.getRedirectResult().then((result) => {
+        if(result.user) {
+          const user = result.user
+
+          // firestoreのusersコレクションにユーザーデータがない場合、usersコレクションにデータを登録して、プロフィール登録に移動
+          db.collection('users').doc(user.uid).get()
+            .then((doc) => {
+              doc.exists 
+                ? router.push('/')
+                : db.collection('users').doc(user.uid).set(
+                  {
+                    uid:  user.uid,
+                    admin:false,
+                    icon: user.photoURL,
+                    name: user.displayName
+                  }
+                )
+                .then(() => router.push('/profileEdit'))
+          })
+        }
+      })
+
+      auth.onAuthStateChanged((user:any) => {
+        if(user){
+          userId.value = user.uid
+        }else{
+          console.log('Not login')
+        }
+      })
+
+
+
+      return {
+        email,
+        pass,
+        changeEmail,
+        changePassword,
+        signUpWithEmail,
+        userId,
+        googleSignIn
+      }
+    }
   })
 
 </script>
