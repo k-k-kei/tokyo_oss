@@ -34,11 +34,28 @@
         </svg>
         <span class="text-cPink text-sm pl-1">{{ like }}</span>
       </div>
-      <!-- ユーザー名と日時 -->
+      <!-- アイコン・ニックネーム・カテゴリ・作成日時 -->
       <div class="mt-4">
-        <p class="text-sm">{{ userId }}</p>
-        <p class="text-sm text-gray-300">{{ changeDate(datetime) }}</p>
+        <div class="flex justify-between">
+          <div class="flex items-center">
+            <div v-if="icon">
+              <img class="max-w-full w-10 rounded-full mr-2" :src="icon" :alt="editorImage">
+            </div>
+            <div v-else>
+              <img class="max-w-full w-10 rounded-full mr-2" :src="editorImage" :alt="editorImage">
+            </div>
+            <div class="flex flex-col">
+              <p class="text-sm">{{ author }}</p>
+              <p class="text-sm text-cGray">{{ changeDate(datetime) }}</p>
+            </div>
+          </div>
+          <div v-if="category">
+            <p class="text-sm text-cWhite bg-cGray rounded p-1">{{ category }}</p>
+          </div>
+          <div v-else />
+        </div>
       </div>
+    </div>
       <!-- 本文 -->
       <div v-for="text in data" :key="text.id">
         <div v-if="text.data.file != null" class="border rounded shadow">
@@ -109,6 +126,12 @@ export default defineComponent({
     const title = ref("");
     //記事作成ユーザーid
     const userId = ref("");
+    //記事作成者ニックネーム
+    const author = ref("");
+    //記事作成者アイコン
+    const icon = ref("");
+    //記事作成者カテゴリー
+    const category = ref("");
     //いいね数
     const like = ref<number>();
     //記事作成日時
@@ -127,6 +150,12 @@ export default defineComponent({
               title.value = doc.data().title;
               //ユーザーidを取得
               userId.value = doc.data().uid;
+              //ニックネームを取得
+              author.value = doc.data().author;
+              //アイコンを取得
+              icon.value = doc.data().icon;
+              //カテゴリーを取得
+              category.value = doc.data().category;
               // いいね数を取得
               like.value = doc.data().like;
               //記事作成日時を取得
@@ -159,16 +188,22 @@ export default defineComponent({
       }
     };
 
+    const editorImage = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+
     return {
       data,
       mainImage,
       title,
       userId,
+      author,
+      icon,
+      category,
       like,
       datetime,
       textStyle,
       changeDate,
-      addLike
+      addLike,
+      editorImage
       // getImageFile
     };
   },
@@ -176,7 +211,7 @@ export default defineComponent({
 </script>
 
 <style lang="postcss" scoped>
-/* 
+/*
 
 テキストのスタイルだしわけ
 
