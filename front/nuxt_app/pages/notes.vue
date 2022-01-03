@@ -4,7 +4,7 @@
       <!-- <article-list-wrapper> -->
       <div class="flex">
         <div class="mb-4">
-          <h1 class="text-xl font-bold w-40 leading-6 mb-8 ml-3">
+          <h1 class="text-xl font-bold w-40 leading-6 mb-6 ml-3">
             記事
           </h1>
           <ul class="pb-4 mb-4">
@@ -18,6 +18,30 @@
               下書き
             </li>
           </ul>
+          <hr>
+          <h1 class="text-xl font-bold w-40 leading-6 mt-8 mb-6 ml-3">
+            設定
+          </h1>
+          <ul class="w-full pb-4 mb-4">
+            <li class="relative z-0 flex items-center w-full py-2 px-0 text-base hover:bg-gray-200 hover:rounded-sm">
+              <a href="/profileEdit" class="relative z-0 flex items-center w-full">
+                プロフィール
+              </a>
+            </li>
+          </ul>
+          <div v-if="data.admin">
+            <hr>
+            <h1 class="text-xl font-bold w-40 leading-6 mt-8 mb-6 ml-3">
+              管理者メニュー
+            </h1>
+            <ul class="w-full pb-4 mb-4">
+              <li class="relative z-0 flex items-center w-full py-2 px-0 text-base hover:bg-gray-200 hover:rounded-sm">
+                <NuxtLink to="/admin" class="relative z-0 flex items-center w-full">
+                  管理画面
+                </NuxtLink>
+              </li>
+            </ul>
+          </div>
         </div>
         <div class="content">
           <div v-show="tab === 1" class="content-item">
@@ -48,7 +72,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from '@nuxtjs/composition-api'
+import { defineComponent, ref, onMounted, reactive } from '@nuxtjs/composition-api'
 import { db, auth } from '../plugins/firebase'
 
 export default defineComponent({
@@ -58,6 +82,10 @@ export default defineComponent({
     const memosPublic = ref<any[]>([])
     const memosDraft = ref<any[]>([])
     const userId = ref('')
+    const data: any = reactive({
+      uid: '',
+      admin: false
+    })
 
     auth.onAuthStateChanged((user:any) => {
       if (user) {
@@ -104,6 +132,17 @@ export default defineComponent({
             }
           })
         })
+      auth.onAuthStateChanged(async (user:any) => {
+        data.uid = user.uid
+        data.admin = await getUserInfo(data.uid)
+      })
+
+      const getUserInfo = async (id:string) => {
+        let admin = false
+        await db.collection('users').doc(id).get()
+          .then((user:any) => admin = user.data().admin)
+        return admin
+      }
     })
 
     const buttonTitle = 'ログアウト'
@@ -112,7 +151,8 @@ export default defineComponent({
       memosAll,
       memosPublic,
       memosDraft,
-      tab: 1
+      tab: 1,
+      data
     }
   }
 })
@@ -135,7 +175,7 @@ li:hover{
   border-radius: 3px;
 }
 .content {
-  margin-left: 10px;
+  margin-left: 20px;
 }
 .clickBtn {
   font-weight: bold;
