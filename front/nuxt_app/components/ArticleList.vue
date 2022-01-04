@@ -1,34 +1,17 @@
 <template>
-  <div data-has-main-background="true" class="p-5 border-concreteGray border-b rounded bg-white">
-    <header class="flex items-baseline justify-between min-w-full px-4 pb-2 border-b border-solid border-concreteGray">
-      <div class="text-sm whitespace-nowrap">
+  <div class="p-5 rounded bg-white">
+    <header class="flex items-baseline justify-between px-4 pb-2 border-b border-solid border-teal-100">
+      <div class="text-sm whitespace-nowrap w-140">
         {{ articleNum }} 記事
       </div>
-      <!-- <div>
-        <ul class="flex items-center">
-          <li class="ml-8 text-sm whitespace-nowrap">
-            <button class="flex items-center">
-              公開ステータス
-            </button>
-          </li>
-          <li class="ml-8 text-sm whitespace-nowrap">
-            <button class="flex items-center">
-              期間
-            </button>
-          </li>
-        </ul>
-      </div> -->
     </header>
     <!-- articleList__body -->
     <ul class="relative z-50">
       <li v-for="(memo, id) in articles" :key="id">
         <!-- articleList__item -->
-        <div class="relative flex p-4 border-b border-solid border-concreteGray">
-          <div class="flex justify-between w-full bg-teal-100 text-teal-900">
-            <!-- <label for="listCheckbox" class="flex items-center">
-              <input id="listCheckbox" type="checkbox" class="text-cGreen w-10" value="true">
-            </label> -->
-            <NuxtLink :to="'/' + memo.id + '/'" class="block px-4 py-3">
+        <div class="relative flex p-4 border-b border-solid border-teal-100 hover:bg-cBlueGray">
+          <div class="flex justify-between text-teal-900">
+            <NuxtLink :to="'/articles/' + memo.id + '/'" class="block px-4 py-3">
               <div class="items-start w-80">
                 <h2 class="text-lg text-cMain tracking-wider font-bold">
                   {{ memo.title }}
@@ -48,13 +31,13 @@
             <!-------------->
             <div class="flex items-center ml-6">
               <NuxtLink :to="'/edit/' + memo.id">
-                <button class="text-sm w-12 p-2 align-center rounded border-2 hover:border-gray-600">
+                <button class="text-sm w-12 p-2 align-center rounded bg-white border-2 hover:border-gray-600">
                   編集
                 </button>
               </NuxtLink>
             </div>
             <div class="flex items-center m-2">
-              <button class="text-sm w-12 p-2 align-center rounded border-2 hover:border-gray-600" @click="deleteMemo(memo.id)">
+              <button class="text-sm w-12 p-2 align-center rounded bg-white border-2 hover:border-gray-600" @click="deleteMemo(memo.id)">
                 削除
               </button>
             </div>
