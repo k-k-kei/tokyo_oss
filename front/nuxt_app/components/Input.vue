@@ -2,7 +2,7 @@
   <div>
     <p class="text-lg font-semibold">  {{ inputTitle }} </p>
     <input
-      class="block text-gray-700 p-1 m-4 ml-0 mt-1 w-full rounded text-lg font-normal placeholder-gray-300"
+      class="block text-gray-700 p-1 m-4 ml-0 mt-1 w-full rounded text-lg font-normal placeholder-gray-300 border border-gray-300"
       :type="typeName"
       @input="$emit('update:modelValue', $event.target.value)"
       @change="$emit('change', $event.target.value)"
