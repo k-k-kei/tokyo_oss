@@ -179,40 +179,31 @@ export default defineComponent({
     });
 
     const addLike = () => {
-      // if(!like.value && like.value !== 0) return
-      // like.value += 1
+      if(uid.value){
 
-      // db.collection('memo').doc(id).update({
-      //   like:like.value
-      // })
-      // .then(() => console.log("update いいね -> ",like.value))
-      console.log(likes.value)
-    
-      if(likes.value.includes(uid.value)){
-        like.value -= 1
-        const index = likes.value.indexOf(uid.value)
-        likes.value.splice(index,1)
+        if(likes.value.includes(uid.value)){
 
-        db.collection('memo').doc(id).update({
-          like:like.value,
-          likes:likes.value
-        })
-        .then(() => console.log("update いいね -> ",like.value, likes.value))
-      }else{
-        like.value += 1
-        likes.value.push(uid.value)
+          like.value -= 1
+          
+          const index = likes.value.indexOf(uid.value)
+          likes.value.splice(index,1)
 
-        db.collection('memo').doc(id).update({
-          like:like.value,
-          likes:likes.value
-        })
-        .then(() => console.log("update いいね -> ",like.value, likes.value))
+          db.collection('memo').doc(id).update({
+            like:like.value,
+            likes:likes.value
+          })
+          .then(() => console.log("update いいね -> ",like.value, likes.value))
+        }else{
+          like.value += 1
+          likes.value.push(uid.value)
 
+          db.collection('memo').doc(id).update({
+            like:like.value,
+            likes:likes.value
+          })
+          .then(() => console.log("update いいね -> ",like.value, likes.value))
+        }
       }
-
-    
-
-
     }
 
     //editer.jsで保存されたtypeによってclassをだしわけ
