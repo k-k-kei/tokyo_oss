@@ -4,7 +4,7 @@
         <div class="flex justify-center items-center md:pl-4">
           <img src="/images/logo.png" alt="ソトブロ" class="w-8 md:w-12">
           <span
-            class="text-center text-xs md:text-xl ml-1 font-bold leading-relaxed font-sans"
+            class="text-center text-xs md:text-xl ml-1 font-bold leading-relaxed font-sans text-hidden"
           >
             外に出たくなるブログ
           </span>
@@ -62,3 +62,13 @@ export default defineComponent({
   },
 })
 </script>
+
+<style scoped>
+  @media (max-width: 300px) {
+    /* 横幅が280px以下のデザイン */
+    .text-hidden {
+      display: none;
+    }
+
+  }
+</style>

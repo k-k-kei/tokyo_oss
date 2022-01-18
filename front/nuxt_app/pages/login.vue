@@ -1,9 +1,9 @@
 <template>
-  <div class="flex flex-col items-center pt-24 min-h-screen">
-    <div v-if="userId == '' " class="sw-full sm:w-3/4 max-w-lg p-12 pb-6 shadow-2xl rounded border-gray-100 border">
-    <div class="pb-6 text-3xl font-semibold">ログイン</div>
+  <div class="flex flex-col items-center pt-10 min-h-screen ">
+    <div v-if="userId == '' " class="max-w-lg p-12 pb-3 shadow-2xl rounded border-gray-100 border">
+    <div class="pb-6 text-xl font-semibold text-center">ログイン</div>
       <Input
-        inputTitle="Email"
+        inputTitle="メールアドレス"
         v-model = 'email'
         @change = 'changeEmail'
         typeName="text"
@@ -14,15 +14,15 @@
         @change = 'changePassword'
         typeName="password"
       />
-      <Nuxt-link to="/signup"> 新規登録はこちらから </Nuxt-link>
+      <Nuxt-link to="/signup" class="text-sm border-black border-b"> 新規登録はこちらから </Nuxt-link>
       <button
         @click="signUpWithEmail(email,pass)"
-        class="w-1/3 block mx-auto mt-6 bg-cAcc  py-2 rounded text-white shadow-lg font-semibold"
+        class="w-full block mx-auto mt-6 bg-cAcc  py-2 rounded text-white shadow-lg font-semibold"
       >
         ログイン
       </button>
       <button  @click="googleSignIn"
-        class="w-1/3 block mx-auto mt-6 bg-cAcc  py-2 rounded text-white shadow-lg font-semibold">
+        class="w-full block mx-auto mt-6 bg-cAcc  py-2 rounded text-white shadow-lg font-semibold">
         Google認証
       </button>
     </div>
@@ -85,7 +85,7 @@
           // firestoreのusersコレクションにユーザーデータがない場合、usersコレクションにデータを登録して、プロフィール登録に移動
           db.collection('users').doc(user.uid).get()
             .then((doc) => {
-              doc.exists 
+              doc.exists
                 ? router.push('/')
                 : db.collection('users').doc(user.uid).set(
                   {
