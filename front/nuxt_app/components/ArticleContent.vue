@@ -104,13 +104,13 @@
                     <p class="text-sm text-gray-300 pl-3">コーヒー侍</p>
                 </div>
             </div> -->
-    </div>
+    <!-- </div> -->
   </div>
 </template>
 
 <script lang="ts">
 import { ref, defineComponent, onMounted } from "@nuxtjs/composition-api";
-import { db } from "../plugins/firebase";
+import { db, auth } from "../plugins/firebase";
 import getParamsId from "../composable/getParams";
 import changeDate from "../composable/changeDate";
 
@@ -136,6 +136,10 @@ export default defineComponent({
     const like = ref<number>();
     //記事作成日時
     const datetime = ref("");
+    // いいねした人
+    const likes = ref<Array<String>>([])
+    // 閲覧者のユーザーid
+    const uid = ref('');
 
     // firebaseのオブジェクトをリアルタイムに取得
     onMounted(() => {
@@ -160,6 +164,8 @@ export default defineComponent({
               like.value = doc.data().like;
               //記事作成日時を取得
               datetime.value = doc.data().time;
+              //いいねした人を取得
+              likes.value = doc.data().likes;
               //テキストを取得
               //取得したオブジェクトの中にある配列を変数に格納
               //配列を展開して一つずつ上記で定義したdataに移す
@@ -168,15 +174,45 @@ export default defineComponent({
             }
           });
         });
+
+        getProfile();
     });
 
     const addLike = () => {
-      if(!like.value) return
-      like.value += 1
-      db.collection('memo').doc(id).update({
-        like:like.value
-      })
-      .then(() => console.log("update いいね -> ",like.value))
+      // if(!like.value && like.value !== 0) return
+      // like.value += 1
+
+      // db.collection('memo').doc(id).update({
+      //   like:like.value
+      // })
+      // .then(() => console.log("update いいね -> ",like.value))
+      console.log(likes.value)
+    
+      if(likes.value.includes(uid.value)){
+        like.value -= 1
+        const index = likes.value.indexOf(uid.value)
+        likes.value.splice(index,1)
+
+        db.collection('memo').doc(id).update({
+          like:like.value,
+          likes:likes.value
+        })
+        .then(() => console.log("update いいね -> ",like.value, likes.value))
+      }else{
+        like.value += 1
+        likes.value.push(uid.value)
+
+        db.collection('memo').doc(id).update({
+          like:like.value,
+          likes:likes.value
+        })
+        .then(() => console.log("update いいね -> ",like.value, likes.value))
+
+      }
+
+    
+
+
     }
 
     //editer.jsで保存されたtypeによってclassをだしわけ
@@ -190,6 +226,16 @@ export default defineComponent({
 
     const editorImage = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
 
+    const getProfile = async () => {
+      auth.onAuthStateChanged((user:any) => {
+        if(user){
+          uid.value = user.uid
+        }
+      })
+    }
+
+
+
     return {
       data,
       mainImage,
@@ -199,11 +245,14 @@ export default defineComponent({
       icon,
       category,
       like,
+      likes,
+      uid,
       datetime,
       textStyle,
       changeDate,
       addLike,
-      editorImage
+      editorImage,
+      getProfile
       // getImageFile
     };
   },
