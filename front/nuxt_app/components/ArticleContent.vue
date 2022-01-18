@@ -178,13 +178,22 @@ export default defineComponent({
         getProfile();
     });
 
-    const addLike = () => {
+    const addLike = async () => {
       if(uid.value){
+        console.log(likes.value)
 
-        if(likes.value.includes(uid.value)){
+        if(likes.value == undefined){
+            like.value += 1
+            const doc = await db.collection('memo').doc(id).get()
+            const data = Object.assign({likes:[uid.value]}, doc.data())
+            console.log(data)
+            db.collection('memo').doc(id).set(data)
+              .then((res) => console.log(res))
+
+        }else if(likes.value.includes(uid.value)){
 
           like.value -= 1
-          
+
           const index = likes.value.indexOf(uid.value)
           likes.value.splice(index,1)
 
