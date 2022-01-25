@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-col items-center pt-24  min-h-screen">
-    <div class="sw-full sm:w-3/4 max-w-lg p-12 pb-6 shadow-2xl rounded border-gray-100 border">
-    <div class="pb-6 text-3xl font-semibold">ユーザー登録</div>
+  <div class="flex flex-col items-center pt-10 min-h-screen">
+    <div class="max-w-lg p-12 pb-3 shadow-2xl rounded border-gray-100 border">
+    <div class="pb-6 text-xl font-semibold text-center">ユーザー登録</div>
       <Input
         inputTitle="Email"
         v-model = 'email'
@@ -16,7 +16,7 @@
       />
       <button
         @click="signUpWithEmail(email,pass)"
-        class="w-1/3 block mx-auto mt-6 bg-cAcc  py-2 rounded text-white shadow-lg font-semibold"
+        class="w-full block mx-auto mt-6 bg-cAcc  py-2 rounded text-white shadow-lg font-semibold"
       >
         登録
       </button>

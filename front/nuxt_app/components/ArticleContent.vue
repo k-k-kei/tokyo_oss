@@ -34,11 +34,30 @@
         </svg>
         <span class="text-cPink text-sm pl-1">{{ like }}</span>
       </div>
-      <!-- ユーザー名と日時 -->
+      <!-- アイコン・ニックネーム・カテゴリ・作成日時 -->
       <div class="mt-4">
         <p class="text-sm">{{ userName }}</p>
         <p class="text-sm text-gray-300">{{ changeDate(datetime) }}</p>
+        <div class="flex justify-between">
+          <div class="flex items-center">
+            <div v-if="icon">
+              <img class="max-w-full w-10 rounded-full mr-2" :src="icon" :alt="editorImage">
+            </div>
+            <div v-else>
+              <img class="max-w-full w-10 rounded-full mr-2" :src="editorImage" :alt="editorImage">
+            </div>
+            <div class="flex flex-col">
+              <p class="text-sm">{{ author }}</p>
+              <p class="text-sm text-cGray">{{ changeDate(datetime) }}</p>
+            </div>
+          </div>
+          <div v-if="category">
+            <p class="text-sm text-cWhite bg-cGray rounded p-1">{{ category }}</p>
+          </div>
+          <div v-else />
+        </div>
       </div>
+    </div>
       <!-- 本文 -->
       <div v-for="text in data" :key="text.id">
         <div v-if="text.data.file != null" class="border rounded shadow">
@@ -62,7 +81,7 @@
 
 <script lang="ts">
 import { ref, defineComponent, onMounted } from "@nuxtjs/composition-api";
-import { db } from "../plugins/firebase";
+import { db, auth } from "../plugins/firebase";
 import getParamsId from "../composable/getParams";
 import changeDate from "../composable/changeDate";
 
@@ -78,6 +97,12 @@ export default defineComponent({
     const title = ref("");
     //記事作成ユーザーid
     const userId = ref("");
+    //記事作成者ニックネーム
+    const author = ref("");
+    //記事作成者アイコン
+    const icon = ref("");
+    //記事作成者カテゴリー
+    const category = ref("");
     //いいね数
     const like = ref<number>();
     //記事作成日時
@@ -85,6 +110,11 @@ export default defineComponent({
     
     //firestoreのusersコレクションに登録されているユーザー一覧
     const userName = ref("");
+
+    // いいねした人
+    const likes = ref<Array<String>>([])
+    // 閲覧者のユーザーid
+    const uid = ref('');
 
     // firebaseのオブジェクトをリアルタイムに取得
     onMounted(() => {
@@ -99,10 +129,18 @@ export default defineComponent({
               title.value = doc.data().title;
               //ユーザーidを取得
               userId.value = doc.data().uid;
+              //ニックネームを取得
+              author.value = doc.data().author;
+              //アイコンを取得
+              icon.value = doc.data().icon;
+              //カテゴリーを取得
+              category.value = doc.data().category;
               // いいね数を取得
               like.value = doc.data().like;
               //記事作成日時を取得
               datetime.value = doc.data().time;
+              //いいねした人を取得
+              likes.value = doc.data().likes;
               //テキストを取得
               //取得したオブジェクトの中にある配列を変数に格納
               //配列を展開して一つずつ上記で定義したdataに移す
@@ -121,14 +159,45 @@ export default defineComponent({
             }
           });
         });
+        
+        getProfile();
     });
 
-    const addLike = () => {
-      like.value = like.value + 1
-      db.collection('memo').doc(id).update({
-        like:like.value
-      })
-      .then(() => console.log("update いいね -> ",like.value))
+    const addLike = async () => {
+      if(uid.value){
+        console.log(likes.value)
+
+        if(likes.value == undefined){
+            like.value += 1
+            const doc = await db.collection('memo').doc(id).get()
+            const data = Object.assign({likes:[uid.value]}, doc.data())
+            console.log(data)
+            db.collection('memo').doc(id).set(data)
+              .then((res) => console.log(res))
+
+        }else if(likes.value.includes(uid.value)){
+
+          like.value -= 1
+
+          const index = likes.value.indexOf(uid.value)
+          likes.value.splice(index,1)
+
+          db.collection('memo').doc(id).update({
+            like:like.value,
+            likes:likes.value
+          })
+          .then(() => console.log("update いいね -> ",like.value, likes.value))
+        }else{
+          like.value += 1
+          likes.value.push(uid.value)
+
+          db.collection('memo').doc(id).update({
+            like:like.value,
+            likes:likes.value
+          })
+          .then(() => console.log("update いいね -> ",like.value, likes.value))
+        }
+      }
     }
 
     //editer.jsで保存されたtypeによってclassをだしわけ
@@ -140,24 +209,44 @@ export default defineComponent({
       }
     };
 
+    const editorImage = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+
+    const getProfile = async () => {
+      auth.onAuthStateChanged((user:any) => {
+        if(user){
+          uid.value = user.uid
+        }
+      })
+    }
+
+
+
     return {
       data,
       mainImage,
       title,
       userId,
+      author,
+      icon,
+      category,
       like,
+      likes,
+      uid,
       datetime,
       userName,
       textStyle,
       changeDate,
       addLike,
+      editorImage,
+      getProfile
+      // getImageFile
     };
   },
 });
 </script>
 
 <style lang="postcss" scoped>
-/* 
+/*
 
 テキストのスタイルだしわけ
 

@@ -90,7 +90,7 @@ export default defineComponent({
       data.editor = new EditorJS({
         //Editor.jsの対象にするidを与える
         holder: "editorjs",
-        tools: { 
+        tools: {
           header: {
             class: Header,
             config: {
@@ -109,17 +109,17 @@ export default defineComponent({
               uploader:{
                 async uploadByFile(file:File){
                   const metadata = {contentType: "image/jpeg"}
-                  const uploadTask = await storage.ref().child(file.name).put(file, metadata)                  
+                  const uploadTask = await storage.ref().child(file.name).put(file, metadata)
                   const downloadURL = await uploadTask.ref.getDownloadURL()
                   return {
                     success: 1,
                     file: {url: downloadURL},
                   }
                 },
-              },  
+              },
             },
           }
-        }, 
+        },
         data:{
           time:article.time,
           version:article.version,
@@ -139,6 +139,7 @@ export default defineComponent({
           console.log("usersコレクション内のデータ:",user.data())
           data.author = !user.data() ? "No Name" : user.data().name
           data.icon = !user.data() ? '' : user.data().icon
+          data.category = !user.data() ? '' : user.data().category
         })
       }
       // editor部分をsaveするメソッド
@@ -156,6 +157,7 @@ export default defineComponent({
             author   : data.author,
             icon     : data.icon,
             evaluation : evaluation.value,
+            category : data.category
           }
           console.log(tmpObj)
           if(imageFile.value !== ""){
@@ -238,8 +240,8 @@ export default defineComponent({
       saveStorage,
       clickPosition,
       mapPosition,
-      id, 
-      route, 
+      id,
+      route,
       evalPlace,
       evaluation
     }
