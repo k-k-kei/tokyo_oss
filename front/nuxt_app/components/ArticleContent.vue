@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- <BaseInputImage @saveImageFile="getImageFile" /> -->
     <!-- ヘッダー下にマージンをとる -->
     <div class="h-72">
       <img
@@ -76,7 +75,6 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script lang="ts">
